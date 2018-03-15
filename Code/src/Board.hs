@@ -46,7 +46,7 @@ initWorld = World initBoard Black
 -- Otherwise, add the new piece on the board.
 makeMove :: Board -> Col -> Position -> Maybe Board
 makeMove board colour position = case getThePiece (pieces board) position of
-  Just n  -> Nothing -- Position already occupied
+  Just x  -> Nothing -- Position already occupied
   Nothing -> if ((fst position < 0) || (fst position > size board - 1) || (snd position < 0) || (snd position > size board - 1) )
                 then Nothing
                 else Just board { pieces = (position, colour) : pieces board }
