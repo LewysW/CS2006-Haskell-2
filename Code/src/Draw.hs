@@ -32,5 +32,5 @@ drawPiece b p = case getThePiece (pieces b) p of
                     col White = Color white
 
 -- Draw a Black or White chip in a given position
-drawChip :: Position -> Picture
-drawChip (x, y) = Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 5 5
+drawCircle :: Position -> Picture
+drawCircle (x, y) = Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 5 5
