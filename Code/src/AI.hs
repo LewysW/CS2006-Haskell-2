@@ -1,8 +1,11 @@
 module AI where
 
 import Board
+
+--Imported for use in AI
 import Data.Ix
 import Data.List ((\\))
+import Data.Maybe
 
 data GameTree = GameTree { game_board :: Board,
                            game_turn :: Col,
@@ -42,8 +45,9 @@ buildTree gen b c = let moves = gen b c in -- generated moves
 getBestMove ::  Int -- ^ Maximum search depth
                -> GameTree -- ^ Initial game tree
                -> Position
-getBestMove = undefined
+getBestMove d tree = fst((next_moves tree)!!0)
 
+--Gets list of empty positions (with no piece) on board for potential moves
 getEmptyPos :: [(Position, Col)] --Pieces on board
             -> Int --Size of board
             -> [Position] --Empty positions on board
@@ -51,21 +55,25 @@ getEmptyPos [] size = range ((0, 0), (size - 1, size - 1))
 getEmptyPos pieces size = range ((0, 0), (size - 1, size - 1)) \\ (map fst pieces)
 
 
-
 --Generates list of possible positions to be used to construct GameTree
 --Finds all legal moves for now TODO reduce size of moves to avoid combinatorial explosion
 gen :: Board -> Col -> [Position]
 gen board col = getEmptyPos (pieces board) (size board)
 
--- Function to update the board of the world structure using the gen and getBestMove functions
-updateBoard :: Board -> Col -> Board
-updateBoard board colour = undefined
+-- Function to update board by playing AI move (current search depth of 1 by default)
+-- Makes a move using the board, colour and position.
+-- Position is determined by building a list of empty moves (gen),
+-- generating a tree from this list (buildTree), finding the best move in this GameTree
+-- using getBestMove (currently just a random move) and making the move at this positions
+-- using makeMove
+updateBoard :: Board -> Col -> Maybe Board
+updateBoard board colour = makeMove board colour (getBestMove 1 (buildTree gen board colour))
 
 -- Update the world state after some time has passed
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> World -- ^ current world state
             -> World
-updateWorld t w = w --{ board = (updateBoard (board w) t)}
+updateWorld t w = if ((turn w) == Black) then w { board = fromJust(updateBoard (board w) (turn w)), turn = White} else w
 
 {- Hint: 'updateWorld' is where the AI gets called. If the world state
  indicates that it is a computer player's turn, updateWorld should use
