@@ -35,7 +35,7 @@ drawPiece b p = case getThePiece (pieces b) p of
 
 -- Draw a Black or White chip in a given position
 drawCircle :: Position -> Picture
-drawCircle (x, y) = Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 5 5
+drawCircle (x, y) = Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 7 7
 
 -- Check whether the game is finished or not. If so, print out the winner of the game on the board.
 checkEnd :: World -> [Picture]
@@ -43,8 +43,8 @@ checkEnd w = case checkWon (board w) of
                   Just c  -> [printOutWinner c]
                   Nothing -> []
 
-textpad = -400
-scaler = 0.75
+textpad = -300
+scaler = 0.8
 
 -- Print out the winner.
 printOutWinner :: Col -> Picture

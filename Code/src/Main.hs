@@ -21,7 +21,7 @@ import AI
 -- move
 
 main :: IO ()
-main = play (InWindow "Gomoku" (640, 480) (10, 10)) (greyN 0.4) 10
+main = play (InWindow "Gomoku" (840, 680) (10, 10)) (greyN 0.4) 10 --640, 480
             initWorld -- in Board.hs
             drawWorld -- in Draw.hs
             handleInput -- in Input.hs
