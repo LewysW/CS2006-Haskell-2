@@ -6,6 +6,11 @@ import Board
 import Data.Ix
 import Data.List ((\\))
 import Data.Maybe
+import Data.Fixed
+
+--Used as pseudo random number generator seed
+import System.CPUTime
+import System.IO.Unsafe
 
 data GameTree = GameTree { game_board :: Board,
                            game_turn :: Col,
@@ -45,7 +50,14 @@ buildTree gen b c = let moves = gen b c in -- generated moves
 getBestMove ::  Int -- ^ Maximum search depth
                -> GameTree -- ^ Initial game tree
                -> Position
-getBestMove d tree = fst((next_moves tree)!!0)
+getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+
+getRandomIndex :: Int -- List length
+                -> Int -- Pseudo-random index
+getRandomIndex len  = fromIntegral((unsafePerformIO getCPUTime) `mod` toInteger(len))
+
+
+
 
 --Gets list of empty positions (with no piece) on board for potential moves
 getEmptyPos :: [(Position, Col)] --Pieces on board
@@ -73,7 +85,9 @@ updateBoard board colour = makeMove board colour (getBestMove 1 (buildTree gen b
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> World -- ^ current world state
             -> World
-updateWorld t w = if ((turn w) == Black) then w { board = fromJust(updateBoard (board w) (turn w)), turn = White} else w
+updateWorld t w = if ((turn w) == Black)
+                    then w { board = fromJust(updateBoard (board w) (turn w)), turn = White}
+                  else w
 
 {- Hint: 'updateWorld' is where the AI gets called. If the world state
  indicates that it is a computer player's turn, updateWorld should use
