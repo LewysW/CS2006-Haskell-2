@@ -35,7 +35,7 @@ handleInput e b = b
  At first, it is reasonable to assume that both players are human players.
 -}
 
-spacing = 25
+spacing = 50
 
 -- Check all possible points on the grid and compare to converted coordinates
 getPosition :: Position -> Position -> Int -> Maybe Position

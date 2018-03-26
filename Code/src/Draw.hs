@@ -3,7 +3,7 @@ module Draw(drawWorld) where
 import Graphics.Gloss
 import Board
 
-spacing = 25
+spacing = 50
 
 -- Given a world state, return a Picture which will render the world state.
 -- Currently just draws a single blue circle as a placeholder.
@@ -43,7 +43,7 @@ checkEnd w = case checkWon (board w) of
                   Just c  -> [printOutWinner c]
                   Nothing -> []
 
-textpad = -200
+textpad = -400
 scaler = 0.75
 
 -- Print out the winner.

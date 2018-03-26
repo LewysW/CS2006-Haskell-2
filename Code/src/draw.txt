@@ -1,0 +1,20 @@
+-- Given a world state, return a Picture which will render the world state.
+-- Currently just draws a single blue circle as a placeholder.
+--
+-- This will need to extract the Board from the world state and draw it
+-- as a grid plus pieces.
+drawWorld :: World -> Picture
+--drawWorld w = Color blue $ Circle 100 --This is the given drawWorld, which should be modified by us.
+drawWorld w = do let dimension = size(board w) --let the dimension as a size of the board
+                 let boards = [ (i, j) | i <- [1 .. dimension], j <- [1 .. dimension] ]
+                 let whitePos = getPositions (pieces (board w)) White
+                 let blackPos = getPositions (pieces (board w)) Black
+
+
+
+-- Gets a list of positions of all pieces of the given colour.
+getPositions :: [(Position, Col)] -> Col -> [Position]
+getPositions [] _ = []
+getPositions ((p, c):xs) col = if c == col
+                                  then p : getPositions xs col
+                                  else getPositions xs col
