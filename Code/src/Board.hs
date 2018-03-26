@@ -81,8 +81,10 @@ For every position ((x, y), col) in the 'pieces' list:
 -}
 
 -- Check all 8 possible directions for the checkWon function.
---It checks if there is piece on the given direction, by calling the countPiecesOnTheBoard function.
+-- It checks if there is piece on the given direction, by calling the countPiecesOnTheBoard function.
 checkPiecesOnTheBoard :: [(Position, Col)] -> Board -> Maybe Col
+checkPiecesOnTheBoard [] _ = Nothing
+-- Count pieces on the all 8 directions.
 checkPiecesOnTheBoard (x:xs) board | countPiecesOnTheBoard x pb (0, 1) sb (snd x) == tb = Just (snd x) -- North
                                    | countPiecesOnTheBoard x pb (0, -1) sb (snd x) == tb = Just (snd x) -- South
                                    | countPiecesOnTheBoard x pb (1, 0) sb (snd x) == tb = Just (snd x) -- East

@@ -11,7 +11,7 @@ spacing = 25
 -- This will need to extract the Board from the world state and draw it
 -- as a grid plus pieces.
 drawWorld :: World -> Picture
-drawWorld w = Translate half half (Pictures (drawBoard (board w) (0, 0) [] ))
+drawWorld w = Translate half half (Pictures (drawBoard (board w) (0, 0) [] ++ checkEnd w))
             where half = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-size of board to centre it
 
 -- Draw the board for the Gomoku game.
@@ -22,7 +22,6 @@ drawBoard board (x, y) pics | x == ((size board) - 1) && y == ((size board) - 1)
                             | otherwise = Pictures [line ((x, y), (x + 1, y)), line ((x, y), (x, y + 1))] : drawPiece board (x, y) : drawBoard board (x + 1, y) pics
                             where line ((x1, y1), (x2, y2)) = Color blue $ Line [(fromIntegral (x1 * spacing), fromIntegral (y1 * spacing)), (fromIntegral (x2 * spacing), fromIntegral (y2 * spacing))]
                             --line ((x1, y1), (x2, y2)) draws a blue line from (x1, y1) to (x2, y2).
-
 
 -- Draw the piece if there is a piece on the particular position.
 -- If the condition is satisfied, draw the piece by calling the drawCircle function with the particular colour.
@@ -37,3 +36,17 @@ drawPiece b p = case getThePiece (pieces b) p of
 -- Draw a Black or White chip in a given position
 drawCircle :: Position -> Picture
 drawCircle (x, y) = Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 5 5
+
+-- Check whether the game is finished or not. If so, print out the winner of the game on the board.
+checkEnd :: World -> [Picture]
+checkEnd w = case checkWon (board w) of
+                  Just c  -> [printOutWinner c]
+                  Nothing -> []
+
+textpad = -200
+scaler = 0.75
+
+-- Print out the winner.
+printOutWinner :: Col -> Picture
+printOutWinner White = color white $ Translate textpad (-textpad) (scale scaler scaler (text "White Wins"))
+printOutWinner Black = color black $ Translate textpad (-textpad) (scale scaler scaler (text "Black Wins"))
