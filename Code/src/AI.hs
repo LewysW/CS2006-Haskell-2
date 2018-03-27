@@ -85,7 +85,7 @@ updateBoard board colour = makeMove board colour (getBestMove 1 (buildTree gen b
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> World -- ^ current world state
             -> World
-updateWorld t w = if ((turn w) /= (player w)) --if not the player's turn
+updateWorld t w = if ((turn w) /= (player w) && checkWon (board w) == Nothing) --if not the player's turn
                     then w { board = fromJust(updateBoard (board w) (turn w)), turn = (player w) }
                   else w
 
