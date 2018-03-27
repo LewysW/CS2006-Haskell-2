@@ -4,6 +4,8 @@ import Graphics.Gloss
 import Board
 
 spacing = 50
+half :: World -> Float
+half w = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-size of board to centre it
 
 -- Given a world state, return a Picture which will render the world state.
 -- Currently just draws a single blue circle as a placeholder.
@@ -11,8 +13,7 @@ spacing = 50
 -- This will need to extract the Board from the world state and draw it
 -- as a grid plus pieces.
 drawWorld :: World -> Picture
-drawWorld w = Translate half half (Pictures (drawBoard (board w) (0, 0) [] ++ checkEnd w))
-            where half = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-size of board to centre it
+drawWorld w = Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [] ++ checkEnd w))
 
 -- Draw the board for the Gomoku game.
 drawBoard :: Board -> Position -> [Picture] -> [Picture]
@@ -40,13 +41,13 @@ drawCircle (x, y) = Translate (fromIntegral (x * spacing)) (fromIntegral (y * sp
 -- Check whether the game is finished or not. If so, print out the winner of the game on the board.
 checkEnd :: World -> [Picture]
 checkEnd w = case checkWon (board w) of
-                  Just c  -> [printOutWinner c]
+                  Just c  -> [printOutWinner w c]
                   Nothing -> []
 
 textpad = -300
 scaler = 0.8
 
 -- Print out the winner.
-printOutWinner :: Col -> Picture
-printOutWinner White = color white $ Translate textpad (-textpad) (scale scaler scaler (text "White Wins"))
-printOutWinner Black = color black $ Translate textpad (-textpad) (scale scaler scaler (text "Black Wins"))
+printOutWinner :: World -> Col -> Picture
+printOutWinner w White = color white $ Translate 0 (-half w) (scale scaler scaler (text "White Wins"))
+printOutWinner w Black = color black $ Translate 0 (-half w) (scale scaler scaler (text "Black Wins"))
