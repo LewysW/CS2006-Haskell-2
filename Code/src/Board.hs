@@ -1,5 +1,7 @@
 module Board where
 
+spacing = 50
+
 data Col = Black | White
   deriving (Show, Eq, Read)
 
@@ -49,11 +51,19 @@ data World = World { board :: Board,
                      player :: Col,
                      buttons :: [Button] }
 
-initWorld size target player = World (initBoard size target) Black player allButtons
+initWorld size target player = World (initBoard size target) Black player (allButtons size)
 
 -- List of all buttons that the game uses.
-allButtons :: [Button]
-allButtons = [undoButton]
+allButtons :: Int -> [Button]
+allButtons s = adjustButtons s [undoButton]
+
+getSize size = (fromIntegral ( ((size - 1) * spacing)) / 2)
+
+adjustButtons :: Int -> [Button] -> [Button]
+adjustButtons size = map adjustB
+  where adjustB b = b { topLeft = (((fst (topLeft b) - round(getSize size) - 40)), ((snd (topLeft b) + round(getSize size)))),
+                       bottomRight = (((fst (bottomRight b) - round(getSize size) - 40)), ((snd (bottomRight b) + round (getSize size))))
+                      }
 
 -- A function that returns to the last turn of the current player, thus, it actually undoes 2 turns.
 undo :: World -> World
@@ -62,7 +72,7 @@ undo w = w { board = (board w) { pieces = remove (pieces (board w)) 2 } }
 
 -- A Button that rolls back one turn for the current player
 undoButton :: Button
-undoButton = Button { topLeft = (-315, 195), bottomRight = (-235, 165), value = "Undo Move", action = undo }
+undoButton = Button { topLeft = (-80, 0), bottomRight = (0, -30), value = "Undo Move", action = undo }
 
 
 -- This function removes the n elements from the front of a list.

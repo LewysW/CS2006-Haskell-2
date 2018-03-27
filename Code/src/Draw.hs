@@ -3,7 +3,6 @@ module Draw(drawWorld) where
 import Graphics.Gloss
 import Board
 
-spacing = 50
 half :: World -> Float
 half w = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-size of board to centre it
 
@@ -13,7 +12,7 @@ half w = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-si
 -- This will need to extract the Board from the world state and draw it
 -- as a grid plus pieces.
 drawWorld :: World -> Picture
-drawWorld w = Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [])) : Pictures (drawButtons (buttons w)) : checkEnd w)
+drawWorld w = Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [])) : (Pictures (drawButtons w (buttons w))) : checkEnd w)
 
 -- Draw the board for the Gomoku game.
 drawBoard :: Board -> Position -> [Picture] -> [Picture]
@@ -44,7 +43,6 @@ checkEnd w = case checkWon (board w) of
                   Just c  -> [printOutWinner w c]
                   Nothing -> []
 
-textpad = -300
 scaler = 0.4
 
 -- Print out the winner.
@@ -53,8 +51,8 @@ printOutWinner w White = color white $ Translate (half w) 0 (scale scaler scaler
 printOutWinner w Black = color black $ Translate (half w) 0 (scale scaler scaler (text "Black Wins"))
 
 -- This function draws the button on the board.
-drawButtons :: [Button] -> [Picture]
-drawButtons = map drawB
+drawButtons :: World -> [Button] -> [Picture]
+drawButtons w = map drawB
   -- Move the button to the correct position
   where drawB b = Translate (fromIntegral $
                     (fst (topLeft b) - fst (bottomRight b)) `div` 2 + fst (bottomRight b))

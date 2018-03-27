@@ -53,7 +53,6 @@ checkButtons w (xm, ym) (b:bs) = if xm > fst (topLeft b) &&
  At first, it is reasonable to assume that both players are human players.
 -}
 
-spacing = 50
 
 -- Check all possible points on the grid and compare to converted coordinates
 getPosition :: Position -> Position -> Int -> Maybe Position
