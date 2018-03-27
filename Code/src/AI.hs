@@ -85,8 +85,8 @@ updateBoard board colour = makeMove board colour (getBestMove 1 (buildTree gen b
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> World -- ^ current world state
             -> World
-updateWorld t w = if ((turn w) == Black)
-                    then w { board = fromJust(updateBoard (board w) (turn w)), turn = White}
+updateWorld t w = if ((turn w) /= (player w))
+                    then w { board = fromJust(updateBoard (board w) (turn w)), turn = (player w) }
                   else w
 
 {- Hint: 'updateWorld' is where the AI gets called. If the world state

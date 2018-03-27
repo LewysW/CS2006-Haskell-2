@@ -1,7 +1,7 @@
 module Board where
 
 data Col = Black | White
-  deriving (Show, Eq)
+  deriving (Show, Eq, Read)
 
 other :: Col -> Col
 other Black = White
@@ -24,7 +24,8 @@ data Board = Board { size :: Int,
   deriving Show
 
 -- Default board is 6x6, target is 3 in a row, no initial pieces
-initBoard = Board 6 3 []
+
+initBoard size target = Board size target []
 
 -- Overall state is the board and whose turn it is, plus any further
 -- information about the world (this may later include, for example, player
@@ -35,9 +36,10 @@ initBoard = Board 6 3 []
 -- most recent moves were).
 
 data World = World { board :: Board,
-                     turn :: Col }
+                     turn :: Col,
+                     player :: Col }
 
-initWorld = World initBoard Black
+initWorld size target player = World (initBoard size target) White player
 
 
 -- Play a move on the board; return 'Nothing' if the move is invalid
