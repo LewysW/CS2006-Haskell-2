@@ -28,8 +28,8 @@ main = do args <- getArgs
           else do
             let size = read (args!!0) :: Int
             let target = read (args!!1) :: Int
-            let color = read (args!!2) :: Col
-            play (InWindow "Gomoku" (840, 680) (10, 10)) (greyN 0.4) 10 (initWorld size target color) drawWorld handleInput updateWorld
+            let player = read (args!!2) :: Col
+            play (InWindow "Gomoku" (840, 680) (10, 10)) (greyN 0.4) 10 (initWorld size target player) drawWorld handleInput updateWorld
           -- initWorld in Board.hs
           -- drawWorld in Draw.hs
           -- handleInput in Input.hs
