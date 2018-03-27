@@ -160,3 +160,9 @@ countPiecesOnTheBoard x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= si
 -- return an integer indicating how good the board is for that colour.
 evaluate :: Board -> Col -> Int
 evaluate board colour = undefined
+
+--getConsecutiveSets :: Board -> Col -> Int
+
+--getLengthOfSets :: Board -> Col -> Int
+
+--getOpenEndsOfSets :: Board ->Col -> Int
