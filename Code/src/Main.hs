@@ -29,7 +29,7 @@ main = do args <- getArgs
             let size = read (args!!0) :: Int
             let target = read (args!!1) :: Int
             let player = read (args!!2) :: Col
-            play (InWindow "Gomoku" (840, 680) (10, 10)) (greyN 0.4) 10 (initWorld size target player) drawWorld handleInput updateWorld
+            play (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 10 (initWorld size target player) drawWorld handleInput updateWorld
           -- initWorld in Board.hs
           -- drawWorld in Draw.hs
           -- handleInput in Input.hs

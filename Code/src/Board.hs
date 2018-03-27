@@ -23,6 +23,15 @@ data Board = Board { size :: Int,
                    }
   deriving Show
 
+-- A Button contains it's top-left and bottom-right coordinates,
+-- the value that it displays and a function that changes the
+-- world state.
+data Button = Button { topLeft :: Position,
+                       bottomRight :: Position,
+                       value :: String,
+                       action :: World -> World
+                     }
+
 -- Default board is 6x6, target is 3 in a row, no initial pieces
 
 initBoard size target = Board size target []
@@ -37,9 +46,30 @@ initBoard size target = Board size target []
 
 data World = World { board :: Board,
                      turn :: Col,
-                     player :: Col }
+                     player :: Col,
+                     buttons :: [Button] }
 
-initWorld size target player = World (initBoard size target) Black player
+initWorld size target player = World (initBoard size target) Black player allButtons
+
+-- List of all buttons that the game uses.
+allButtons :: [Button]
+allButtons = [undoButton]
+
+-- A function that returns to the last turn of the current player, thus, it actually undoes 2 turns.
+undo :: World -> World
+undo w = w { board = (board w) { pieces = remove (pieces (board w)) 2 } }
+
+
+-- A Button that rolls back one turn for the current player
+undoButton :: Button
+undoButton = Button { topLeft = (-315, 195), bottomRight = (-235, 165), value = "Undo Move", action = undo }
+
+
+-- This function removes the n elements from the front of a list.
+remove :: [a] -> Int -> [a]
+remove [] _ = []
+remove xs 0 = xs
+remove (x:xs) n = remove xs (n - 1)
 
 
 -- Play a move on the board; return 'Nothing' if the move is invalid
@@ -73,7 +103,6 @@ checkWon board = checkPiecesOnTheBoard (pieces board) board
 {- Hint: One way to implement 'checkWon' would be to write functions
 which specifically check for lines in all 8 possible directions
 (NW, N, NE, E, W, SE, SW)
-
 In these functions:
 To check for a line of n in a row in a direction D:
 For every position ((x, y), col) in the 'pieces' list:

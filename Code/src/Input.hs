@@ -19,14 +19,32 @@ handleInput (EventKey (MouseButton LeftButton) Up m (x, y)) w
            Just c  -> w --if so, ignore the input.
            Nothing -> case getPosition (0, 0) (floor x, floor y) (size (board w)) of --if not, get the clicked position.
                            Just pos -> case makeMove (board w) (turn w) pos of -- If it is an actual position, make a move.
-                                            Just b  -> w { board = b, turn = other (turn w) } -- Set the new board and turn
-                                            Nothing -> w -- Or make no change.
-                           -- Otherwise there is nothing there, so ignore it
-                           Nothing  -> w
+                                            Just b  -> handleButtons (nextTurn w b) (x, y)  -- Set the new board and turn and check buttons for clicking
+                                            Nothing -> handleButtons w (x, y)  -- Or make no change and check buttons for clicking
+                           -- Otherwise there is nothing there, so ignore it. And then check the buttons for clicking
+                           Nothing  -> handleButtons w (x, y)
+   where nextTurn w b = w { board = b, turn = other (turn w) }
+         handleButtons w (x, y) = checkButtons w (floor x, floor y) (buttons w)
+
+
 --handleInput (EventMotion (x, y)) b = trace ("Mouse moved to: " ++ show (x,y)) b
 --handleInput (EventKey (Char k) Down _ _) b = trace ("Key " ++ show k ++ " down") b
 --handleInput (EventKey (Char k) Up _ _) b = trace ("Key " ++ show k ++ " up") b
 handleInput e b = b
+
+
+checkButtons :: World -> Position -> [Button] -> World
+checkButtons w _ [] = w
+-- Where w is the world, xm;ym are mouse coordinates, b is button, bs is list
+-- If the click was made on the button's position
+checkButtons w (xm, ym) (b:bs) = if xm > fst (topLeft b) &&
+                                    xm < fst (bottomRight b) &&
+                                    ym < snd (topLeft b) &&
+                                    ym > snd (bottomRight b) then
+                                    -- Run the buttons's function and return
+                                    trace (show xm ++ ":" ++ show ym) (action b w)
+                                    -- Otherwise check the rest of the buttons
+                                    else checkButtons w (xm, ym) bs
 
 {- Hint: when the 'World' is in a state where it is the human player's
  turn to move, a mouse press event should calculate which board position

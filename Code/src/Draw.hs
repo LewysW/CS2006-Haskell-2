@@ -11,8 +11,9 @@ spacing = 50
 -- This will need to extract the Board from the world state and draw it
 -- as a grid plus pieces.
 drawWorld :: World -> Picture
-drawWorld w = Translate half half (Pictures (drawBoard (board w) (0, 0) [] ++ checkEnd w))
-            where half = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-size of board to centre it
+drawWorld w = Pictures ( Translate half half (Pictures (drawBoard (board w) (0, 0) [])) : Pictures (drawButtons (buttons w)) : checkEnd w)
+            where half = fromIntegral (- ((size (board w) - 1) * spacing)) / 2 -- Find half-size of board to centre it
+
 
 -- Draw the board for the Gomoku game.
 drawBoard :: Board -> Position -> [Picture] -> [Picture]
@@ -44,9 +45,23 @@ checkEnd w = case checkWon (board w) of
                   Nothing -> []
 
 textpad = -300
-scaler = 0.8
+scaler = 0.4
 
 -- Print out the winner.
 printOutWinner :: Col -> Picture
 printOutWinner White = color white $ Translate textpad (-textpad) (scale scaler scaler (text "White Wins"))
 printOutWinner Black = color black $ Translate textpad (-textpad) (scale scaler scaler (text "Black Wins"))
+
+
+-- This function draws the button on the board.
+drawButtons :: [Button] -> [Picture]
+drawButtons = map drawB
+  -- Move the button to the correct position
+  where drawB b = Translate (fromIntegral $
+                    (fst (topLeft b) - fst (bottomRight b)) `div` 2 + fst (bottomRight b))
+                  (fromIntegral $
+                    (snd (topLeft b) - snd (bottomRight b)) `div` 2 + snd (bottomRight b))
+                  (Pictures (
+                   -- Draw a white rectangle for the button. Then write the text with a black colour.
+                   color white (polygon (rectanglePath 80 30)) : [color black $ Translate (-32) (-5) (scale 0.1 0.1 (text $ value b))]
+                  ))
