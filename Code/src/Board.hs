@@ -39,7 +39,7 @@ data World = World { board :: Board,
                      turn :: Col,
                      player :: Col }
 
-initWorld size target player = World (initBoard size target) White player
+initWorld size target player = World (initBoard size target) Black player
 
 
 -- Play a move on the board; return 'Nothing' if the move is invalid
