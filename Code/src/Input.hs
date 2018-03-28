@@ -26,10 +26,6 @@ handleInput (EventKey (MouseButton LeftButton) Up m (x, y)) w
    where nextTurn w b = w { board = b, turn = other (turn w) }
          handleButtons w (x, y) = checkButtons w (floor x, floor y) (buttons w)
 
-
---handleInput (EventMotion (x, y)) b = trace ("Mouse moved to: " ++ show (x,y)) b
---handleInput (EventKey (Char k) Down _ _) b = trace ("Key " ++ show k ++ " down") b
---handleInput (EventKey (Char k) Up _ _) b = trace ("Key " ++ show k ++ " up") b
 handleInput e b = b
 
 
@@ -42,7 +38,7 @@ checkButtons w (xm, ym) (b:bs) = if xm > fst (topLeft b) &&
                                     ym < snd (topLeft b) &&
                                     ym > snd (bottomRight b) then
                                     -- Run the buttons's function and return
-                                    trace (show xm ++ ":" ++ show ym) (action b w)
+                                    trace ("Undo: " ++ show xm ++ ":" ++ show ym) (action b w)
                                     -- Otherwise check the rest of the buttons
                                     else checkButtons w (xm, ym) bs
 
