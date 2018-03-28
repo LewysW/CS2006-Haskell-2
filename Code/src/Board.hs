@@ -110,7 +110,7 @@ getPiece (x:xs) position | fst x == position = Just x
 -- Returns 'Nothing' if neither player has won yet
 -- Returns 'Just c' if the player 'c' has won
 checkWon :: Board -> Maybe Col
-checkWon board = checkPiecesOnBoard (pieces board) board
+checkWon board = checkBoardPieces (pieces board) board
 
 
 {- Hint: One way to implement 'checkWon' would be to write functions
@@ -125,19 +125,19 @@ For every position ((x, y), col) in the 'pieces' list:
 -}
 
 -- Check all 8 possible directions for the checkWon function.
--- It checks if there is piece on the given direction, by calling the countPiecesOnBoard function.
-checkPiecesOnBoard :: [(Position, Col)] -> Board -> Maybe Col
-checkPiecesOnBoard [] _ = Nothing
+-- It checks if there is piece on the given direction, by calling the countBoardPieces function.
+checkBoardPieces :: [(Position, Col)] -> Board -> Maybe Col
+checkBoardPieces [] _ = Nothing
 -- Count pieces on the all 8 directions.
-checkPiecesOnBoard (x:xs) board | countPiecesOnBoard x pb (0, 1) sb (snd x) == tb = Just (snd x) -- North
-                                   | countPiecesOnBoard x pb (0, -1) sb (snd x) == tb = Just (snd x) -- South
-                                   | countPiecesOnBoard x pb (1, 0) sb (snd x) == tb = Just (snd x) -- East
-                                   | countPiecesOnBoard x pb (-1, 0) sb (snd x) == tb = Just (snd x) -- West
-                                   | countPiecesOnBoard x pb (1, 1) sb (snd x) == tb = Just (snd x) -- North East
-                                   | countPiecesOnBoard x pb (-1, 1) sb (snd x) == tb = Just (snd x) -- North West
-                                   | countPiecesOnBoard x pb (1, -1) sb (snd x) == tb = Just (snd x) -- South East
-                                   | countPiecesOnBoard x pb (-1, -1) sb (snd x) == tb = Just (snd x) -- South West
-                                   | otherwise = checkPiecesOnBoard xs board
+checkBoardPieces (x:xs) board | countBoardPieces x pb (0, 1) sb (snd x) == tb = Just (snd x) -- North
+                                   | countBoardPieces x pb (0, -1) sb (snd x) == tb = Just (snd x) -- South
+                                   | countBoardPieces x pb (1, 0) sb (snd x) == tb = Just (snd x) -- East
+                                   | countBoardPieces x pb (-1, 0) sb (snd x) == tb = Just (snd x) -- West
+                                   | countBoardPieces x pb (1, 1) sb (snd x) == tb = Just (snd x) -- North East
+                                   | countBoardPieces x pb (-1, 1) sb (snd x) == tb = Just (snd x) -- North West
+                                   | countBoardPieces x pb (1, -1) sb (snd x) == tb = Just (snd x) -- South East
+                                   | countBoardPieces x pb (-1, -1) sb (snd x) == tb = Just (snd x) -- South West
+                                   | otherwise = checkBoardPieces xs board
                                    where pb = pieces board
                                          sb = size board
                                          tb = target board
@@ -146,16 +146,16 @@ checkPiecesOnBoard (x:xs) board | countPiecesOnBoard x pb (0, 1) sb (snd x) == t
 -- This function takes a piece, direction, size and colour, and count the number of the pieces in that direction.
 -- Moreover, it is not allowed to go out of the bounds of the board.
 -- Thus, this function should check the position of the piece is in the bound of the board.
-countPiecesOnBoard :: (Position, Col) -> [(Position, Col)] -> (Int, Int) -> Int -> Col -> Int
+countBoardPieces :: (Position, Col) -> [(Position, Col)] -> (Int, Int) -> Int -> Col -> Int
 --if the colour of the piece is not matched with the given colour, return 0.
-countPiecesOnBoard (_, Black) _ _ _ White = 0
-countPiecesOnBoard (_, White) _ _ _ Black = 0
+countBoardPieces (_, Black) _ _ _ White = 0
+countBoardPieces (_, White) _ _ _ Black = 0
 --If the colour matches, count the number of pieces on the board.
-countPiecesOnBoard x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= size || snd (fst x) < 0 || snd (fst x) >= size) = 0
+countBoardPieces x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= size || snd (fst x) < 0 || snd (fst x) >= size) = 0
                                          -- If the position of the piece is out of bounds of the board, return 0. Otherwise, count the number of pieces.
                                          | otherwise = case getPiece xs (fst (fst x) + fst d, snd (fst x) + snd d) of
                                                             --gets the piece on the given direction by calling the getThePiece function.
-                                                            Just piece -> 1 + (countPiecesOnBoard piece xs d size colour)
+                                                            Just piece -> 1 + (countBoardPieces piece xs d size colour)
                                                             Nothing -> 1
 
 
