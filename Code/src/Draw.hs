@@ -26,7 +26,7 @@ drawBoard board (x, y) pics | x == ((size board) - 1) && y == ((size board) - 1)
 -- Draw the piece if there is a piece on the particular position.
 -- If the condition is satisfied, draw the piece by calling the drawCircle function with the particular colour.
 drawPiece :: Board -> Position -> Picture
-drawPiece b p = case getThePiece (pieces b) p of
+drawPiece b p = case getPiece (pieces b) p of
                      Just piece -> col (snd piece) $ drawCircle p --if there is a piece on this position, draw it.
                      Nothing -> Color blue $ Translate (fromIntegral (fst p * spacing)) (fromIntegral (snd p * spacing)) $ ThickCircle 2 2
               where col Black = Color black
