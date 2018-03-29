@@ -165,18 +165,18 @@ evaluate :: Board -> Col -> Int
 evaluate board col = getNumConsecutive board col
 
 getNumConsecutive :: Board -> Col -> Int
-getNumConsecutive board col = sum (map (getConsecutive (pieces board) board) [(x, y) | x <- [-1..1], y <- [-1..1]])
+getNumConsecutive board col = sum(map (getConsecutive (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
 
-getConsecutive :: [(Position, Col)] -> Board -> (Int, Int) -> Int
-getConsecutive [] _ _ = 0
-getConsecutive (x:xs) board dir | (countBoardPieces x (pieces board) dir (size board) (snd x)) > 1 = 1 + (getConsecutive xs board dir)
-                                | otherwise = 0 + (getConsecutive xs board dir)
+getConsecutive :: [(Position, Col)] -> Board -> Col -> (Int, Int) -> Int
+getConsecutive [] _ _ _ = 0
+getConsecutive (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (size board) col) > 1) = 1 + (getConsecutive xs board col dir)
+                                | otherwise = (getConsecutive xs board col dir)
 
 
 getAverageLengthOfSets :: Board -> Col -> Int
 getAverageLengthOfSets board col = undefined
 
---[(x, y) | x <- [-1..1], y <- [-1..1]]
+--[(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]
 
 getNumOpenEndedSets :: Board -> Col -> Int
 getNumOpenEndedSets board col = undefined
