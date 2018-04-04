@@ -70,13 +70,24 @@ adjustButtons size = map adjustB
 
 -- A function that returns to the last turn of the current player, thus, it actually undoes 2 turns.
 undo :: World -> World
-undo w = w { board = (board w) { pieces = remove (pieces (board w)) 2 } }
-
+undo w = if b
+            then w
+            else w { board = (board w) { pieces = remove (pieces (board w)) 2 } }
+       where b = checkIfFirstTurn (pieces (board w))
 
 -- A Button that rolls back one turn for the current player
 undoButton :: Button
 undoButton = Button { topLeft = (-80, 0), bottomRight = (0, -30), value = "Undo Move", action = undo }
 
+--Check if it's the first turn.
+checkIfFirstTurn :: [(Position, Col)] -> Bool
+checkIfFirstTurn (x:xs) = b
+  where b = checkIfOnePieceOnTheBoard xs
+
+--Check if there is only one piece on the board.
+checkIfOnePieceOnTheBoard :: [(Position, Col)] -> Bool
+checkIfOnePieceOnTheBoard [] = True;
+checkIfOnePieceOnTheBoard _ = False;
 
 -- This function removes the n elements from the front of a list.
 remove :: [a] -> Int -> [a]
