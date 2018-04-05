@@ -140,14 +140,10 @@ For every position ((x, y), col) in the 'pieces' list:
 checkBoardPieces :: [(Position, Col)] -> Board -> Maybe Col
 checkBoardPieces [] _ = Nothing
 -- Count pieces on the all 8 directions.
-checkBoardPieces (x:xs) board | countBoardPieces x pb (0, 1) sb (snd x) == tb = Just (snd x) -- North
-                                   | countBoardPieces x pb (0, -1) sb (snd x) == tb = Just (snd x) -- South
-                                   | countBoardPieces x pb (1, 0) sb (snd x) == tb = Just (snd x) -- East
-                                   | countBoardPieces x pb (-1, 0) sb (snd x) == tb = Just (snd x) -- West
-                                   | countBoardPieces x pb (1, 1) sb (snd x) == tb = Just (snd x) -- North East
-                                   | countBoardPieces x pb (-1, 1) sb (snd x) == tb = Just (snd x) -- North West
-                                   | countBoardPieces x pb (1, -1) sb (snd x) == tb = Just (snd x) -- South East
-                                   | countBoardPieces x pb (-1, -1) sb (snd x) == tb = Just (snd x) -- South West
+checkBoardPieces (x:xs) board | (countBoardPieces x pb (0, 1) sb (snd x)) + (countBoardPieces x pb (0, -1) sb (snd x)) - 1 == tb = Just (snd x) -- North & South
+                                   | (countBoardPieces x pb (1, 0) sb (snd x)) + (countBoardPieces x pb (-1, 0) sb (snd x)) - 1 == tb = Just (snd x) -- East & West
+                                   | (countBoardPieces x pb (1, 1) sb (snd x)) + (countBoardPieces x pb (-1, -1) sb (snd x)) - 1 == tb = Just (snd x) -- North East & South West
+                                   | (countBoardPieces x pb (-1, 1) sb (snd x)) + (countBoardPieces x pb (1, -1) sb (snd x)) - 1 == tb = Just (snd x) -- North West & South East
                                    | otherwise = checkBoardPieces xs board
                                    where pb = pieces board
                                          sb = size board
