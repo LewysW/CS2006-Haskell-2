@@ -7,6 +7,7 @@ import Data.Ix
 import Data.List ((\\))
 import Data.Maybe
 import Data.Fixed
+import Debug.Trace --should erase
 
 --Used as pseudo random number generator seed
 import System.CPUTime
@@ -50,7 +51,10 @@ buildTree gen b c = let moves = gen b c in -- generated moves
 getBestMove ::  Int -- ^ Maximum search depth
                -> GameTree -- ^ Initial game tree
                -> Position
-getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+--getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+getBestMove maxD tree =trace(show (fst((next_moves tree)!! (getRandomIndex (length(next_moves tree)))))) fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+displayPoss []=[]
+displayPoss (x:xs)=[fst x]++displayPoss xs
 
 getRandomIndex :: Int -- List length
                 -> Int -- Pseudo-random index
@@ -72,6 +76,7 @@ getEmptyPos pieces size = range ((0, 0), (size - 1, size - 1)) \\ (map fst piece
 gen :: Board -> Col -> [Position]
 gen board col = getEmptyPos (pieces board) (size board)
 
+
 -- Function to update board by playing AI move (current search depth of 1 by default)
 -- Makes a move using the board, colour and position.
 -- Position is determined by building a list of empty moves (gen),
@@ -83,22 +88,22 @@ updateBoard board colour = makeMove board colour (getBestMove 1 (buildTree gen b
 
 -- Update the world state after some time has passed
 updateWorld :: Float -- ^ time since last update (you can ignore this)
-            -> World -- ^ current world state
-            -> World
-updateWorld t w = if ((turn w) /= (player w) && checkWon (board w) == Nothing) --if not the player's turn
-                    then w { board = fromJust(updateBoard (board w) (turn w)), turn = (player w) }
-                  else w
+            -> IO World -- ^ current world state
+            -> IO (IO World)
+updateWorld t world = do w <- world
+                         if ((turn w) /= (player w) && checkWon (board w) == Nothing) --if not the player's turn
+                            then return $ trace("turn " ++ show(turn w) ++ " ended") return w { board = fromJust(updateBoard (board w) (turn w)), turn = other (turn w) }
+                         else return world
+
+
 
 {- Hint: 'updateWorld' is where the AI gets called. If the world state
  indicates that it is a computer player's turn, updateWorld should use
  'getBestMove' to find where the computer player should play, and update
  the board in the world state with that move.
-
  At first, it is reasonable for this to be a random move!
-
  If both players are human players, the simple version above will suffice,
  since it does nothing.
-
  In a complete implementation, 'updateWorld' should also check if either
  player has won and display a message if so.
 -}

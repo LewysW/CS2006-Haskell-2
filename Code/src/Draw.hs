@@ -11,8 +11,9 @@ half w = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-si
 --
 -- This will need to extract the Board from the world state and draw it
 -- as a grid plus pieces.
-drawWorld :: World -> Picture
-drawWorld w = Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [])) : (Pictures (drawButtons w (buttons w))) : checkEnd w)
+drawWorld :: IO World -> IO Picture
+drawWorld world = do w <- world
+                     return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [])) : (Pictures (drawButtons w (buttons w))) : checkEnd w)
 
 -- Draw the board for the Gomoku game.
 drawBoard :: Board -> Position -> [Picture] -> [Picture]
@@ -22,6 +23,7 @@ drawBoard board (x, y) pics | x == ((size board) - 1) && y == ((size board) - 1)
                             | otherwise = Pictures [line ((x, y), (x + 1, y)), line ((x, y), (x, y + 1))] : drawPiece board (x, y) : drawBoard board (x + 1, y) pics
                             where line ((x1, y1), (x2, y2)) = Color blue $ Line [(fromIntegral (x1 * spacing), fromIntegral (y1 * spacing)), (fromIntegral (x2 * spacing), fromIntegral (y2 * spacing))]
                             --line ((x1, y1), (x2, y2)) draws a blue line from (x1, y1) to (x2, y2).
+
 
 -- Draw the piece if there is a piece on the particular position.
 -- If the condition is satisfied, draw the piece by calling the drawCircle function with the particular colour.

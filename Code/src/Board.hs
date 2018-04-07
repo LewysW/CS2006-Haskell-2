@@ -2,6 +2,14 @@ module Board where
 
 import Data.List ((\\))
 import Debug.Trace
+import System.IO
+import Control.Monad
+import qualified Data.Text as Text
+import qualified Data.Text.IO as TextIO
+import qualified Data.Text.Read as TextRead
+import Data.List.Split
+import System.IO.Unsafe
+
 
 spacing = 50
 
@@ -34,12 +42,14 @@ data Board = Board { size :: Int,
 data Button = Button { topLeft :: Position,
                        bottomRight :: Position,
                        value :: String,
-                       action :: World -> World
+                       action :: IO World -> IO World
                      }
 
 -- Default board is 6x6, target is 3 in a row, no initial pieces
 
-initBoard size target = Board size target []
+--Initialize the board.
+initBoard :: Int -> Int -> [(Position, Col)] -> Board
+initBoard s c ps = Board s c ps
 
 -- Overall state is the board and whose turn it is, plus any further
 -- information about the world (this may later include, for example, player
@@ -54,11 +64,14 @@ data World = World { board :: Board,
                      player :: Col,
                      buttons :: [Button] }
 
-initWorld size target player = World (initBoard size target) Black player (allButtons size)
+
+initWorld :: Int -> Int -> [(Position, Col)] -> Col -> IO World
+initWorld size target history player = return $ World (initBoard size target history) Black player (allButtons size)
+
 
 -- List of all buttons that the game uses.
 allButtons :: Int -> [Button]
-allButtons s = adjustButtons s [undoButton]
+allButtons s = adjustButtons s [undoButton, saveButton, loadButton]
 
 getSize size = (fromIntegral ( ((size - 1) * spacing)) / 2)
 
@@ -69,15 +82,60 @@ adjustButtons size = map adjustB
                       }
 
 -- A function that returns to the last turn of the current player, thus, it actually undoes 2 turns.
-undo :: World -> World
-undo w = if b
-            then w
-            else w { board = (board w) { pieces = remove (pieces (board w)) 2 } }
-       where b = checkIfFirstTurn (pieces (board w))
+undo :: IO World -> IO World
+undo world = do w <- world
+                if (checker w)
+                   then return w
+                   else return $ (w { board = (board w) { pieces = remove (pieces (board w)) 2 } })
+  where checker w = checkIfFirstTurn (pieces (board w))
+
 
 -- A Button that rolls back one turn for the current player
 undoButton :: Button
 undoButton = Button { topLeft = (-80, 0), bottomRight = (0, -30), value = "Undo Move", action = undo }
+
+
+-- A button to save the game
+saveButton :: Button
+saveButton = Button { topLeft = (-80, -40), bottomRight = (0, -70), value = "Save Game", action = save }
+
+save :: IO World -> IO World
+save w = do world <- w
+            writeFile "save.dat" (show (size (board world)) ++ " " ++ show (target (board world))) --Overwrite the old save file and write the size and target of the current board
+            forM_ (pieces (board world)) outputPiece --Write the position and colour of every space on the board
+            return world
+
+outputPiece :: (Position, Col) -> IO()
+outputPiece (p, c) = do appendFile "save.dat" ("\n" ++ show (fst p) ++ " " ++ show (snd p) ++ " " ++ show c)
+
+-- A button to load the save file
+loadButton :: Button
+loadButton = Button { topLeft = (-80, -80), bottomRight = (0, -110), value = "Load Game", action = load }
+
+-- |Load the current game state from a file
+load :: IO World -> IO World
+load w = do world <- w
+            initWorld new_size new_target new_ps (player world)
+         where f = readFile "save.dat" -- Read in the raw save file data
+               ls = splitOn "\n" (unsafePerformIO f) -- Split the save file into lines
+               top = splitOn " " (head ls) -- Grab each word from the top line of the save file
+               new_size = read (head top) :: Int -- First word of the top line is the saved game's board size
+               new_target = read (top!!1) :: Int -- Second word of the top line is the saved game's target
+               new_ps = (parseSaveFile (tail ls)) -- Parse the rest of the save file into a list of pieces
+               new_turn = other (read (splitOn " " (last ls)!!2) :: Col) -- The third word in the final line is the colour of the player who went last (next turn is other colour)
+
+
+-- This function parse the saved file to a list of pieces
+parseSaveFile :: [String] -> [(Position, Col)]
+parseSaveFile [] = []
+parseSaveFile ls = (pos, col) : parseSaveFile (tail ls)
+           where line = splitOn " " (head ls)
+                 x = read (head line) :: Int
+                 y = read (line !! 1) :: Int
+                 pos = (x, y)
+                 col = read (line !! 2) :: Col
+
+
 
 --Check if it's the first turn.
 checkIfFirstTurn :: [(Position, Col)] -> Bool
