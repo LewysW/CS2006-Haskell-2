@@ -65,8 +65,10 @@ data World = World { board :: Board,
                      buttons :: [Button] }
 
 
-initWorld :: Int -> Int -> [(Position, Col)] -> Col -> IO World
-initWorld size target history player = return $ World (initBoard size target history) Black player (allButtons size)
+initWorld :: Int -> Int -> [(Position, Col)] -> Col -> Bool -> IO World
+initWorld size target history player checker = if checker
+                                                  then return $ World (initBoard size target history) Black player (allButtons size)
+                                                  else return $ World (initBoard size target history) White player (allButtons size)
 
 
 -- List of all buttons that the game uses.
@@ -115,7 +117,9 @@ loadButton = Button { topLeft = (-80, -80), bottomRight = (0, -110), value = "Lo
 -- |Load the current game state from a file
 load :: IO World -> IO World
 load w = do world <- w
-            initWorld new_size new_target new_ps (player world)
+            if ((player world) == Black)
+               then initWorld new_size new_target new_ps new_turn True
+               else initWorld new_size new_target new_ps new_turn False
          where f = readFile "save.dat" -- Read in the raw save file data
                ls = splitOn "\n" (unsafePerformIO f) -- Split the save file into lines
                top = splitOn " " (head ls) -- Grab each word from the top line of the save file
