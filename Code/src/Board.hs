@@ -255,10 +255,13 @@ getSetLengths (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (si
 getNumOpenEndedSets :: Board -> Col -> Int
 getNumOpenEndedSets board col = undefined
 
+isClosedSet :: Board -> Col -> (Position, Col) -> (Int, Int) -> Bool
+isClosedSet board col piece dir = if ((getSubsequentPiece board col piece dir) == Nothing) then False
+                                  else True
 
 --Gets the piece after the end of the player's set
 getSubsequentPiece :: Board -> Col -> (Position, Col) -> (Int, Int) -> Maybe (Position, Col)
-getSubsequentPiece board col piece dir = getPiece (pieces board) (addT (mulT ((countBoardPieces piece (pieces board) dir (size board) col)) dir) (fst (piece)))
+getSubsequentPiece board col piece dir = (getPiece (pieces board) (addT (mulT ((countBoardPieces piece (pieces board) dir (size board) col)) dir) (fst (piece))))
 
 mulT :: Int -> (Int, Int) -> (Int, Int)
 mulT x y = (x * (fst y), x * (snd y))
