@@ -242,8 +242,14 @@ getConsecutive (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (s
                                 | otherwise = (getConsecutive xs board col dir)
 
 
-getAverageLengthOfSets :: Board -> Col -> Int
-getAverageLengthOfSets board col = undefined
+getAverageLengthOfSets :: Board -> Col -> Float
+getAverageLengthOfSets board col = realToFrac (sum(map sum (map (getSetLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])))
+                                    / realToFrac (getNumConsecutiveSets board col)
+
+getSetLengths :: [(Position, Col)] -> Board -> Col -> (Int, Int) -> [Int]
+getSetLengths [] _ _ _  = [0]
+getSetLengths (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (size board) col) > 1) = (countBoardPieces x (pieces board) dir (size board) col) : (getSetLengths xs board col dir)
+                                   | otherwise = (getSetLengths xs board col dir)
 
 --[(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]
 
