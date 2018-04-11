@@ -104,7 +104,7 @@ saveButton = Button { topLeft = (-80, -40), bottomRight = (0, -70), value = "Sav
 
 save :: IO World -> IO World
 save w = do world <- w
-            writeFile "save.dat" (show (size (board world)) ++ " " ++ show (target (board world))) --Overwrite the old save file and write the size and target of the current board
+            writeFile "save.dat" (show (size (board world)) ++ " " ++ show (target (board world)) ++ " " ++ (game_type world)) --Overwrite the old save file and write the size and target of the current board
             forM_ (pieces (board world)) outputPiece --Write the position and colour of every space on the board
             return world
 
@@ -126,9 +126,10 @@ load w = do world <- w
                top = splitOn " " (head ls) -- Grab each word from the top line of the save file
                new_size = read (head top) :: Int -- First word of the top line is the saved game's board size
                new_target = read (top!!1) :: Int -- Second word of the top line is the saved game's target
+               new_game_type = (top!!2)
                new_ps = (parseSaveFile (tail ls)) -- Parse the rest of the save file into a list of pieces
                new_turn = other (read (splitOn " " (last ls)!!2) :: Col) -- The third word in the final line is the colour of the player who went last (next turn is other colour)
-               new_game_type = "4x4"
+
 
 -- This function parse the saved file to a list of pieces
 parseSaveFile :: [String] -> [(Position, Col)]
@@ -280,7 +281,10 @@ getSubsequentPiece board col piece dir = if (countBoardPieces piece (pieces boar
 mulT :: Int -> (Int, Int) -> (Int, Int)
 mulT x y = (x * (fst y), x * (snd y))
 
-<<<<<<< HEAD
+--Adds two tuples together
+addT :: (Int, Int) -> (Int, Int) -> (Int, Int)
+addT x y = ((fst x) + (fst y), (snd x) + (snd y))
+
 --for easy rule extension
 
 getNumOpenEndedSets :: Board -> Col -> Int
@@ -315,8 +319,3 @@ checkAllBoardPieces (x:xs) pb board tb color | (countBoardPieces x pb (0, 1) sb 
                                           | (countBoardPieces x pb (-1, 1) sb color) + (countBoardPieces x pb (1, -1) sb color) - 1 == tb = 1 + checkAllBoardPieces xs pb board tb color -- North West & South East
                                           | otherwise = 0 + checkAllBoardPieces xs pb board tb color
                                           where sb = size board
-=======
---Adds two tuples together
-addT :: (Int, Int) -> (Int, Int) -> (Int, Int)
-addT x y = ((fst x) + (fst y), (snd x) + (snd y))
->>>>>>> 431db92fe05b3063953500ece188b1375146e7c0
