@@ -230,8 +230,8 @@ countBoardPieces x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= size ||
 
 -- An evaluation function for a minimax search. Given a board and a colour
 -- return an integer indicating how good the board is for that colour.
-evaluate :: Board -> Col -> Int
-evaluate board col = getNumConsecutive board col
+evaluate :: Board -> Col -> Float
+evaluate board col = realToFrac(getNumConsecutive board col) + (getAverageLengthOfSets board col)
 
 getNumConsecutive :: Board -> Col -> Int
 getNumConsecutive board col = sum(map (getConsecutive (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
@@ -251,7 +251,17 @@ getSetLengths [] _ _ _  = [0]
 getSetLengths (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (size board) col) > 1) = (countBoardPieces x (pieces board) dir (size board) col) : (getSetLengths xs board col dir)
                                    | otherwise = (getSetLengths xs board col dir)
 
---[(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]
-
+-- USE getPiece function to return colour of piece at end of consecutive set to check for other player piece
 getNumOpenEndedSets :: Board -> Col -> Int
 getNumOpenEndedSets board col = undefined
+
+
+--Gets the piece after the end of the player's set
+getSubsequentPiece :: Board -> Col -> (Position, Col) -> (Int, Int) -> Maybe (Position, Col)
+getSubsequentPiece board col piece dir = getPiece (pieces board) (addT (mulT ((countBoardPieces piece (pieces board) dir (size board) col)) dir) (fst (piece)))
+
+mulT :: Int -> (Int, Int) -> (Int, Int)
+mulT x y = (x * (fst y), x * (snd y))
+
+addT :: (Int, Int) -> (Int, Int) -> (Int, Int)
+addT x y = ((fst x) + (fst y), (snd x) + (snd y))
