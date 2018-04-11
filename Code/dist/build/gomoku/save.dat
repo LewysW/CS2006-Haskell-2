@@ -1,4 +1,5 @@
 10 5
+<<<<<<< HEAD
 7 2 White
 0 2 Black
 4 4 White
@@ -21,3 +22,10 @@
 0 9 Black
 7 3 White
 0 0 Black
+=======
+8 2 Black
+5 9 White
+2 9 Black
+2 8 White
+2 2 Black
+>>>>>>> 431db92fe05b3063953500ece188b1375146e7c0
