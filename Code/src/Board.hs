@@ -229,42 +229,56 @@ countBoardPieces x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= size ||
 
 
 -- An evaluation function for a minimax search. Given a board and a colour
--- return an integer indicating how good the board is for that colour.
+-- return an integer (used float instead) indicating how good the board is for that colour.
 evaluate :: Board -> Col -> Float
-evaluate board col = realToFrac(getNumConsecutive board col) + (getAverageLengthOfSets board col)
+evaluate board col = (realToFrac(getNumConsecutive board col) + (getAverageLength board col) - realToFrac(getNumClosed board col))
+                    - (realToFrac(getNumConsecutive board (other col)) + (getAverageLength board (other col)) - realToFrac(getNumClosed board (other col)))
 
 getNumConsecutive :: Board -> Col -> Int
 getNumConsecutive board col = sum(map (getConsecutive (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
 
+getNumClosed :: Board -> Col -> Int
+getNumClosed board col = length (filter (== True) (getClosed board col (pieces board)))
+
+getAverageLength :: Board -> Col -> Float
+getAverageLength board col = if (getNumConsecutive board col) > 0
+                             then realToFrac (sum(map sum (map (getLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])))
+                                    / realToFrac (getNumConsecutive board col)
+                             else 0.0
+
+--Gets the consecutive sets on the board for a player
 getConsecutive :: [(Position, Col)] -> Board -> Col -> (Int, Int) -> Int
 getConsecutive [] _ _ _ = 0
 getConsecutive (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (size board) col) > 1) = 1 + (getConsecutive xs board col dir)
                                 | otherwise = (getConsecutive xs board col dir)
 
+--Gets the lengths of sets on the board that are greater than 1
+getLengths :: [(Position, Col)] -> Board -> Col -> (Int, Int) -> [Int]
+getLengths [] _ _ _  = [0]
+getLengths (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (size board) col) > 1) = (countBoardPieces x (pieces board) dir (size board) col) : (getLengths xs board col dir)
+                                   | otherwise = (getLengths xs board col dir)
 
-getAverageLengthOfSets :: Board -> Col -> Float
-getAverageLengthOfSets board col = realToFrac (sum(map sum (map (getSetLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])))
-                                    / realToFrac (getNumConsecutive board col)
 
-getSetLengths :: [(Position, Col)] -> Board -> Col -> (Int, Int) -> [Int]
-getSetLengths [] _ _ _  = [0]
-getSetLengths (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (size board) col) > 1) = (countBoardPieces x (pieces board) dir (size board) col) : (getSetLengths xs board col dir)
-                                   | otherwise = (getSetLengths xs board col dir)
+-- Gets the sets on the board that are 'closed' (i.e. sets with a length greater than 1 that have the other player's piece at the end)
+getClosed :: Board -> Col -> [(Position, Col)] -> [Bool]
+getClosed board col [] = []
+getClosed board col (x:xs) = (map (isClosed board col x) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]) ++ (getClosed board col xs)
 
--- USE getPiece function to return colour of piece at end of consecutive set to check for other player piece
-getNumOpenEndedSets :: Board -> Col -> Int
-getNumOpenEndedSets board col = undefined
-
-isClosedSet :: Board -> Col -> (Position, Col) -> (Int, Int) -> Bool
-isClosedSet board col piece dir = if ((getSubsequentPiece board col piece dir) == Nothing) then False
+--Checks whether a set is 'closed'
+isClosed :: Board -> Col -> (Position, Col) -> (Int, Int) -> Bool
+isClosed board col piece dir = if ((getSubsequentPiece board col piece dir) == Nothing) then False
                                   else True
 
 --Gets the piece after the end of the player's set
 getSubsequentPiece :: Board -> Col -> (Position, Col) -> (Int, Int) -> Maybe (Position, Col)
-getSubsequentPiece board col piece dir = (getPiece (pieces board) (addT (mulT ((countBoardPieces piece (pieces board) dir (size board) col)) dir) (fst (piece))))
+getSubsequentPiece board col piece dir = if (countBoardPieces piece (pieces board) dir (size board) col) > 1
+                                            then (getPiece (pieces board) (addT (mulT ((countBoardPieces piece (pieces board) dir (size board) col)) dir) (fst (piece))))
+                                         else Nothing
 
+--Multiplies a number by a tuple
 mulT :: Int -> (Int, Int) -> (Int, Int)
 mulT x y = (x * (fst y), x * (snd y))
 
+--Adds two tuples together
 addT :: (Int, Int) -> (Int, Int) -> (Int, Int)
 addT x y = ((fst x) + (fst y), (snd x) + (snd y))
