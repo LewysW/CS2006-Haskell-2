@@ -24,13 +24,14 @@ import AI
 
 main :: IO ()
 main = do args <- getArgs
-          if (length(args) /= 3)
-          then print("Usage: ./gomoku <board_size (Int)> <target (Int)> <player (White/Black)>")
+          if (length(args) /= 4)
+          then print("Usage: ./gomoku <board_size (Int)> <target (Int)> <player (White/Black)> <game_type (normal/4x4)>")
           else do
             let size = read (args!!0) :: Int
             let target = read (args!!1) :: Int
             let player = read (args!!2) :: Col
-            playIO (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 10 (initWorld size target [] player True) drawWorld handleInput updateWorld
+            let game_type = (args!!3)
+            playIO (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 10 (initWorld size target [] player game_type True) drawWorld handleInput updateWorld
           -- initWorld in Board.hs
           -- drawWorld in Draw.hs
           -- handleInput in Input.hs

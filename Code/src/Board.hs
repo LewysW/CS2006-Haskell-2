@@ -62,13 +62,14 @@ initBoard s c ps = Board s c ps
 data World = World { board :: Board,
                      turn :: Col,
                      player :: Col,
+                     game_type :: String,
                      buttons :: [Button] }
 
 
-initWorld :: Int -> Int -> [(Position, Col)] -> Col -> Bool -> IO World
-initWorld size target history player checker = if checker
-                                                  then return $ World (initBoard size target history) Black player (allButtons size)
-                                                  else return $ World (initBoard size target history) White player (allButtons size)
+initWorld :: Int -> Int -> [(Position, Col)] -> Col -> String -> Bool -> IO World
+initWorld size target history player game_type checker = if checker
+                                                  then return $ World (initBoard size target history) Black player game_type (allButtons size)
+                                                  else return $ World (initBoard size target history) White player game_type (allButtons size)
 
 
 -- List of all buttons that the game uses.
@@ -118,8 +119,8 @@ loadButton = Button { topLeft = (-80, -80), bottomRight = (0, -110), value = "Lo
 load :: IO World -> IO World
 load w = do world <- w
             if ((player world) == Black)
-               then initWorld new_size new_target new_ps new_turn True
-               else initWorld new_size new_target new_ps new_turn False
+               then initWorld new_size new_target new_ps new_turn new_game_type True
+               else initWorld new_size new_target new_ps new_turn new_game_type False
          where f = readFile "save.dat" -- Read in the raw save file data
                ls = splitOn "\n" (unsafePerformIO f) -- Split the save file into lines
                top = splitOn " " (head ls) -- Grab each word from the top line of the save file
@@ -127,7 +128,7 @@ load w = do world <- w
                new_target = read (top!!1) :: Int -- Second word of the top line is the saved game's target
                new_ps = (parseSaveFile (tail ls)) -- Parse the rest of the save file into a list of pieces
                new_turn = other (read (splitOn " " (last ls)!!2) :: Col) -- The third word in the final line is the colour of the player who went last (next turn is other colour)
-
+               new_game_type = "4x4"
 
 -- This function parse the saved file to a list of pieces
 parseSaveFile :: [String] -> [(Position, Col)]
@@ -253,5 +254,37 @@ getSetLengths (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (si
 
 --[(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]
 
+--for easy rule extension
+
 getNumOpenEndedSets :: Board -> Col -> Int
 getNumOpenEndedSets board col = undefined
+
+-- checkFourAndFour :: Board -> Col -> Position -> Bool
+-- checkFourAndFour board col pos | countOpen board col pos == 2 = True
+--                                  | otherwise = False
+
+--countOpen :: Board -> Col -> Position -> Int
+--countOpen board col pos =
+
+checkFourAndFour :: Board -> Col -> Position -> Bool
+checkFourAndFour board col pos | trace(show(countOpenAndClosed board col pos 4)) (countOpenAndClosed board col pos 4) >= 5 = True
+                               | otherwise = False
+
+--checkThreeAndThree board col pos = False
+
+--countOpen :: Board -> Col -> Position -> Int
+--countOpen board col pos =
+
+countOpenAndClosed :: Board -> Col -> Position -> Int -> Int
+countOpenAndClosed board col pos target = checkAllBoardPieces ((pos, col) : (pieces board)) ((pos, col) : (pieces board)) board target col
+
+
+checkAllBoardPieces :: [(Position, Col)] -> [(Position, Col)] -> Board -> Int -> Col -> Int
+checkAllBoardPieces [] _ _ _ _ = 0
+-- Count pieces on the all 8 directions.
+checkAllBoardPieces (x:xs) pb board tb color | (countBoardPieces x pb (0, 1) sb color) + (countBoardPieces x pb (0, -1) sb color) - 1 == tb = 1 + checkAllBoardPieces xs pb board tb color -- North & South
+                                          | (countBoardPieces x pb (1, 0) sb color) + (countBoardPieces x pb (-1, 0) sb color) - 1 == tb = 1 + checkAllBoardPieces xs pb board tb color -- East & West
+                                          | (countBoardPieces x pb (1, 1) sb color) + (countBoardPieces x pb (-1, -1) sb color) - 1 == tb = 1 + checkAllBoardPieces xs pb board tb color -- North East & South West
+                                          | (countBoardPieces x pb (-1, 1) sb color) + (countBoardPieces x pb (1, -1) sb color) - 1 == tb = 1 + checkAllBoardPieces xs pb board tb color -- North West & South East
+                                          | otherwise = 0 + checkAllBoardPieces xs pb board tb color
+                                          where sb = size board

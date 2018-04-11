@@ -21,9 +21,11 @@ handleInput (EventKey (MouseButton LeftButton) Up m (x, y)) world =
      case checkWon (board w) of -- Check if the game has been finished
           Just c  -> return $ handleButtons world (x, y) -- Player won, check for button presses but not moves
           Nothing -> case getPosition (0, 0) (floor x, floor y) (size (board w)) of -- Try getting the position on the board of the point clicked
-                          Just pos -> case makeMove (board w) (turn w) pos of -- If it is an actual position, make a move
-                                           Just b  -> return $ handleButtons (nextTurn w b) (x, y) -- Set the new board and turn and check buttons for clicking
-                                           Nothing -> return $ handleButtons world (x, y)-- Or make no change and check buttons for clicking
+                          Just pos -> case ((game_type w) == "4x4" && (checkFourAndFour (board w) (turn w) pos)) of
+                                           True -> return $ handleButtons world (x, y)
+                                           otherwise -> case makeMove (board w) (turn w) pos of -- If it is an actual position, make a move
+                                                            Just b  -> return $ handleButtons (nextTurn w b) (x, y) -- Set the new board and turn and check buttons for clicking
+                                                            Nothing -> return $ handleButtons world (x, y)-- Or make no change and check buttons for clicking
                           Nothing  -> return $ handleButtons world (x, y) -- Otherwise there is nothing there, so ignore it and check the buttons for clicking
   where nextTurn w b = return w { board = b, turn = other (turn w) }
         handleButtons w (x, y) = do world <- w
