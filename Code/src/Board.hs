@@ -236,6 +236,7 @@ evaluate :: Board -> Col -> Float
 evaluate board col = (realToFrac(getNumConsecutive board col) + (getAverageLength board col) - realToFrac(getNumClosed board col))
                     - (realToFrac(getNumConsecutive board (other col)) + (getAverageLength board (other col)) - realToFrac(getNumClosed board (other col)))
 
+
 getNumConsecutive :: Board -> Col -> Int
 getNumConsecutive board col = sum(map (getConsecutive (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
 
