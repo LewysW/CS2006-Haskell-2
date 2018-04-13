@@ -8,6 +8,7 @@ import qualified Data.Text as Text
 import qualified Data.Text.IO as TextIO
 import qualified Data.Text.Read as TextRead
 import Data.List.Split
+import Data.Maybe
 import System.IO.Unsafe
 
 
@@ -230,18 +231,40 @@ countBoardPieces x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= size ||
                                                             Nothing -> 1
 
 
--- An evaluation function for a minimax search. Given a board and a colour
+-- An evaluation function for board. Given a board and a colour
 -- return an integer (used float instead) indicating how good the board is for that colour.
 evaluate :: Board -> Col -> Float
-evaluate board col = (realToFrac(getNumConsecutive board col) + 10 *(getAverageLength board col) - realToFrac(getNumClosed board col))
-                    - (realToFrac(getNumConsecutive board (other col)) + 10 *(getAverageLength board (other col)) - (realToFrac(getNumClosed board (other col))))
+evaluate board col = (realToFrac(getNumConsecutive board col) + 17.5 * (getAverageLength board col) + (realToFrac(isWinningMove board col)) - (4 * realToFrac(getNumClosed board col)))
+                    - (realToFrac(getNumConsecutive board (other col)) + 17.5 * (getAverageLength board (other col)) + realToFrac(isWinningMove board (other col)) - (4 * realToFrac(getNumClosed board (other col))))
 
+--Checks for a potential win move and returns an overwhelming score
+isWinningMove :: Board -> Col -> Int
+isWinningMove board col = if (maxLength board col) >= ((target board)) && (potentialWin board col) then 20000
+                          else 0
+
+--Checks whether future moves can increase the size of the player's set to beyond the target, meaning the current move must be a win
+potentialWin :: Board -> Col -> Bool
+potentialWin board col = let newBoards = potentialBoards board col in
+                          if (maximum(map (\b -> maxLength b col) newBoards)) > (target board) then True
+                          else False
+
+--Generates all potential board layouts for future moves
+potentialBoards :: Board -> Col -> [Board]
+potentialBoards board col = catMaybes (map (makeMove board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
+
+-- Returns maximum length of set on board
+maxLength :: Board -> Col -> Int
+maxLength board col = maximum (map maximum (map (getLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]))
+
+--Gets number of consecutive sets on the board
 getNumConsecutive :: Board -> Col -> Int
 getNumConsecutive board col = sum(map (getConsecutive (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
 
+--Gets the number of closed off sets on the board
 getNumClosed :: Board -> Col -> Int
 getNumClosed board col = length (filter (== True) (getClosed board col (pieces board)))
 
+--Gets the average length of a set on the board
 getAverageLength :: Board -> Col -> Float
 getAverageLength board col = if (getNumConsecutive board col) > 0
                              then realToFrac (sum(map sum (map (getLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])))
@@ -256,14 +279,14 @@ getConsecutive (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (s
 
 --Gets the lengths of sets on the board that are greater than 1
 getLengths :: [(Position, Col)] -> Board -> Col -> (Int, Int) -> [Int]
-getLengths [] _ _ _  = [0]
+getLengths [] _ _ _ = [0]
 getLengths (x:xs) board col dir | ((countBoardPieces x (pieces board) dir (size board) col) > 1) = (countBoardPieces x (pieces board) dir (size board) col) : (getLengths xs board col dir)
                                    | otherwise = (getLengths xs board col dir)
 
 
 -- Gets the sets on the board that are 'closed' (i.e. sets with a length greater than 1 that have the other player's piece at the end)
 getClosed :: Board -> Col -> [(Position, Col)] -> [Bool]
-getClosed board col [] = []
+getClosed board col [] = [False]
 getClosed board col (x:xs) = (map (isClosed board col x) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]) ++ (getClosed board col xs)
 
 --Checks whether a set is 'closed'
@@ -273,7 +296,7 @@ isClosed board col piece dir = if ((getSubsequentPiece board col piece dir) == N
 
 --Gets the piece after the end of the player's set
 getSubsequentPiece :: Board -> Col -> (Position, Col) -> (Int, Int) -> Maybe (Position, Col)
-getSubsequentPiece board col piece dir = if (countBoardPieces piece (pieces board) dir (size board) col) > 0
+getSubsequentPiece board col piece dir = if (countBoardPieces piece (pieces board) dir (size board) col) > 1
                                             then (getPiece (pieces board) (addT (mulT ((countBoardPieces piece (pieces board) dir (size board) col)) dir) (fst (piece))))
                                          else Nothing
 
@@ -290,7 +313,7 @@ addT x y = ((fst x) + (fst y), (snd x) + (snd y))
 getNumOpenEndedSets :: Board -> Col -> Int
 getNumOpenEndedSets board col = undefined
 
--- checkFourAndFour :: Board -> Col -> Position -> Bool
+-- checkFourAndFour :: Board -> C- (realToFrac(getNumConsecutive board (other col)) + 10 *(getAverageLength board (other col)) + 5 * realToFrac(maxLength board (other col)) + realToFrac(isWinningMove board (other col)) - (0.25 * realToFrac(getNumClol -> Position -> Bool
 -- checkFourAndFour board col pos | countOpen board col pos == 2 = True
 --                                  | otherwise = False
 
