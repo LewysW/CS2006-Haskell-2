@@ -8,6 +8,8 @@ import Data.List ((\\))
 import Data.Maybe
 import Data.Fixed
 import Debug.Trace --should erase
+import Data.List (sortBy)
+import Data.Function (on)
 
 --Used as pseudo random number generator seed
 import System.CPUTime
@@ -43,6 +45,18 @@ buildTree gen b c = let moves = gen b c in -- generated moves
                Just b' -> (pos, buildTree gen b' (other c)) : mkNextStates xs
                              -- successful, make move and build tree from
                              -- here for opposite player
+
+-- Get the best next move from a (possibly infinite) game tree. This should
+-- traverse the game tree up to a certain depth, and pick the move which
+-- leads to the position with the best score for the player whose turn it
+-- is at the top of the game tree.
+--getBestMove ::  Int -- ^ Maximum search depth
+--               -> GameTree -- ^ Initial game tree
+--               -> Position
+--getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+--getBestMove maxD tree =trace(show (fst((next_moves tree)!! (getRandomIndex (length(next_moves tree)))))) fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+--displayPoss []=[]
+--displayPoss (x:xs)=[fst x]++displayPoss xs
 
 -- Get the best next move from a (possibly infinite) game tree. This should
 -- traverse the game tree up to a certain depth, and pick the move which
