@@ -233,9 +233,8 @@ countBoardPieces x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= size ||
 -- An evaluation function for a minimax search. Given a board and a colour
 -- return an integer (used float instead) indicating how good the board is for that colour.
 evaluate :: Board -> Col -> Float
-evaluate board col = (realToFrac(getNumConsecutive board col) + (getAverageLength board col) - realToFrac(getNumClosed board col))
-                    - (realToFrac(getNumConsecutive board (other col)) + (getAverageLength board (other col)) - realToFrac(getNumClosed board (other col)))
-
+evaluate board col = (realToFrac(getNumConsecutive board col) + 10 *(getAverageLength board col) - realToFrac(getNumClosed board col))
+                    - (realToFrac(getNumConsecutive board (other col)) + 10 *(getAverageLength board (other col)) - (realToFrac(getNumClosed board (other col))))
 
 getNumConsecutive :: Board -> Col -> Int
 getNumConsecutive board col = sum(map (getConsecutive (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
@@ -274,7 +273,7 @@ isClosed board col piece dir = if ((getSubsequentPiece board col piece dir) == N
 
 --Gets the piece after the end of the player's set
 getSubsequentPiece :: Board -> Col -> (Position, Col) -> (Int, Int) -> Maybe (Position, Col)
-getSubsequentPiece board col piece dir = if (countBoardPieces piece (pieces board) dir (size board) col) > 1
+getSubsequentPiece board col piece dir = if (countBoardPieces piece (pieces board) dir (size board) col) > 0
                                             then (getPiece (pieces board) (addT (mulT ((countBoardPieces piece (pieces board) dir (size board) col)) dir) (fst (piece))))
                                          else Nothing
 

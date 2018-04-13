@@ -65,8 +65,16 @@ buildTree gen b c = let moves = gen b c in -- generated moves
 getBestMove ::  Int -- ^ Maximum search depth
                -> GameTree -- ^ Initial game tree
                -> Position
-getBestMove maxD tree = if (pieces (game_board tree)) == [] then (((size (game_board tree)) `div` 2), ((size (game_board tree)) `div` 2))
+getBestMove maxD tree = let middle = getMiddleOfBoard (size (game_board tree)) in
+                        -- If middle is empty, then play middle
+                        if (getPiece (pieces (game_board tree)) middle) == Nothing  then middle
+                        --Else if middle is occupied then play closest to middle
+                        else if (length(pieces (game_board tree)) == 1) && ((getPiece (pieces (game_board tree)) middle) /= Nothing) then addT middle (-1, -1)
+                        --Else play best move
                         else fst (maxTurn (next_moves tree) (game_turn tree))
+
+getMiddleOfBoard :: Int -> Position
+getMiddleOfBoard size = (size `div` 2, size `div` 2)
 
 --Takes a depth, game tree, boolean (to indicate maximising or minimising). Returns a tuple of score and move
 --minimax :: Int -> GameTree -> Position
