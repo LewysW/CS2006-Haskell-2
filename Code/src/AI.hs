@@ -52,7 +52,7 @@ getBestMove ::  Int -- ^ Maximum search depth
                -> GameTree -- ^ Initial game tree
                -> Position
 --getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
-getBestMove maxD tree =trace(show (fst((next_moves tree)!! (getRandomIndex (length(next_moves tree)))))) fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+getBestMove maxD tree = trace(show (fst((next_moves tree)!! (getRandomIndex (length(next_moves tree)))))) fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
 displayPoss []=[]
 displayPoss (x:xs)=[fst x]++displayPoss xs
 
