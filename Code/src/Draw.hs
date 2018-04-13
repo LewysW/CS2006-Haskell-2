@@ -1,19 +1,28 @@
-module Draw(drawWorld) where
+module Draw(drawWorld, drawLoading) where
 
 import Graphics.Gloss
 import Board
 
+import Debug.Trace
+
 half :: World -> Float
-half w = (fromIntegral (- ((size (board w) - 1) * spacing)) / 2) -- Find half-size of board to centre it
+half w = (fromIntegral (- (( size (board w) - 1) * spacing)) / 2) -- Find half-size of board to centre it
 
 -- Given a world state, return a Picture which will render the world state.
 -- Currently just draws a single blue circle as a placeholder.
 --
 -- This will need to extract the Board from the world state and draw it
 -- as a grid plus pieces.
+
+drawLoading :: IO World -> IO Picture
+drawLoading world = do w <- world
+                       return $ Pictures ( (Pictures (drawButtons w (150, 30) (buttons w))) : [welcomeToGomoku w] )
+
 drawWorld :: IO World -> IO Picture
 drawWorld world = do w <- world
-                     return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [])) : (Pictures (drawButtons w (buttons w))) : checkEnd w)
+                     if (running w)
+                        then return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [])) : (Pictures (drawButtons w (80, 30) (buttons w))) : checkEnd w)
+                     else (drawLoading world)
 
 -- Draw the board for the Gomoku game.
 drawBoard :: Board -> Position -> [Picture] -> [Picture]
@@ -52,9 +61,11 @@ printOutWinner :: World -> Col -> Picture
 printOutWinner w White = color white $ Translate (half w) 0 (scale scaler scaler (text "White Wins"))
 printOutWinner w Black = color black $ Translate (half w) 0 (scale scaler scaler (text "Black Wins"))
 
+welcomeToGomoku :: World -> Picture
+welcomeToGomoku w = color white $ Translate (-300) (-150) (scale scaler scaler (text "Welcome To Gomoku!"))
 -- This function draws the button on the board.
-drawButtons :: World -> [Button] -> [Picture]
-drawButtons w = map drawB
+drawButtons :: World -> (Float, Float) -> [Button] -> [Picture]
+drawButtons w size = map drawB
   -- Move the button to the correct position
   where drawB b = Translate (fromIntegral $
                     (fst (topLeft b) - fst (bottomRight b)) `div` 2 + fst (bottomRight b))
@@ -62,5 +73,5 @@ drawButtons w = map drawB
                     (snd (topLeft b) - snd (bottomRight b)) `div` 2 + snd (bottomRight b))
                   (Pictures (
                    -- Draw a white rectangle for the button. Then write the text with a black colour.
-                   color white (polygon (rectanglePath 80 30)) : [color black $ Translate (-32) (-5) (scale 0.1 0.1 (text $ value b))]
+                   color white (polygon (rectanglePath (fst(size)) (snd(size)))) : [color black $ Translate (-1 * (fst(size)) / 2.5) (-5) (scale 0.1 0.1 (text $ value b))]
                   ))

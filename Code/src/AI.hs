@@ -65,36 +65,10 @@ buildTree gen b c = let moves = gen b c in -- generated moves
 getBestMove ::  Int -- ^ Maximum search depth
                -> GameTree -- ^ Initial game tree
                -> Position
-getBestMove maxD tree = let middle = getMiddleOfBoard (size (game_board tree)) in
-                        -- If middle is empty, then play middle
-                        if (getPiece (pieces (game_board tree)) middle) == Nothing  then middle
-                        --Else if middle is occupied then play closest to middle
-                        else if (length(pieces (game_board tree)) == 1) && ((getPiece (pieces (game_board tree)) middle) /= Nothing) then addT middle (-1, -1)
-                        --Else play best move
-                        else fst (maxTurn (next_moves tree) (game_turn tree))
-
-getMiddleOfBoard :: Int -> Position
-getMiddleOfBoard size = (size `div` 2, size `div` 2)
-
---Takes a depth, game tree, boolean (to indicate maximising or minimising). Returns a tuple of score and move
---minimax :: Int -> GameTree -> Position
---minimax 0 tree =
---minimax depth tree = if (depth `mod` 2) == 0 then minimax (depth - 1) (snd (max (next_moves tree) (other col)))
---                     else minimax (depth - 1) (snd (max (next_moves tree)))
-
-
-
---Gets the max evaluated move and associated game tree on the current board
-maxTurn :: [(Position, GameTree)]-> Col -> (Position, GameTree)
-maxTurn nextMoves col =  snd(head(sortByScore (evaluateNextMoves nextMoves col)))
-
---Sorts list by first tuple in descending order and returns the first element
--- Source: https://stackoverflow.com/questions/30380697/sort-tuples-by-one-of-their-elements-in-haskell
-sortByScore :: [(Float, (Position, GameTree))] -> [(Float, (Position, GameTree))]
-sortByScore = sortBy (flip compare `on` fst)
-
-evaluateNextMoves :: [(Position, GameTree)] -> Col -> [(Float, (Position, GameTree))]
-evaluateNextMoves nextMoves col = map (\ nextMove -> (evaluate (game_board (snd nextMove)) col, nextMove)) nextMoves
+--getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+getBestMove maxD tree = trace(show (fst((next_moves tree)!! (getRandomIndex (length(next_moves tree)))))) fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
+displayPoss []=[]
+displayPoss (x:xs)=[fst x]++displayPoss xs
 
 getRandomIndex :: Int -- List length
                 -> Int -- Pseudo-random index

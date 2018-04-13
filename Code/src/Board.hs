@@ -64,39 +64,88 @@ data World = World { board :: Board,
                      turn :: Col,
                      player :: Col,
                      game_type :: String,
-                     buttons :: [Button] }
+                     buttons :: [Button],
+                     running :: Bool }
 
 
-initWorld :: Int -> Int -> [(Position, Col)] -> Col -> String -> Bool -> IO World
-initWorld size target history player game_type checker = if checker
-                                                  then return $ World (initBoard size target history) Black player game_type (allButtons size)
-                                                  else return $ World (initBoard size target history) White player game_type (allButtons size)
-
+initWorld :: Int -> Int -> [(Position, Col)] -> Col -> Col -> String -> Bool -> IO World
+initWorld size target history turn player game_type running = if running
+                                                  then return $ World (initBoard size target history) turn player game_type (gameButtons size) running
+                                                  else return $ World (initBoard size target history) turn player game_type (loadingButtons size) running
 
 -- List of all buttons that the game uses.
-allButtons :: Int -> [Button]
-allButtons s = adjustButtons s [undoButton, saveButton, loadButton]
+gameButtons :: Int -> [Button]
+gameButtons s = adjustButtons s [undoButton, saveButton, loadButton]
+
+-- List of all buttons that the game uses.
+loadingButtons :: Int -> [Button]
+loadingButtons s = adjustButtons s [sizeSet5Button, sizeSet10Button, sizeSet19Button, targetSet3Button, targetSet5Button, targetSet7Button, whiteButton, blackButton, normalGameButton, fourAndFourGameButton]
 
 getSize size = (fromIntegral ( ((size - 1) * spacing)) / 2)
 
 adjustButtons :: Int -> [Button] -> [Button]
 adjustButtons size = map adjustB
-  where adjustB b = b { topLeft = (((fst (topLeft b) - round(getSize size) - 40)), ((snd (topLeft b) + round(getSize size)))),
-                       bottomRight = (((fst (bottomRight b) - round(getSize size) - 40)), ((snd (bottomRight b) + round (getSize size))))
+  where adjustB b = b { topLeft = (((fst (topLeft b) - round(getSize size)) - 40), ((snd (topLeft b) + round(getSize size)))),
+                       bottomRight = (((fst (bottomRight b) - round(getSize size)) - 40), ((snd (bottomRight b) + round (getSize size))))
                       }
 
 -- A function that returns to the last turn of the current player, thus, it actually undoes 2 turns.
-undo :: IO World -> IO World
-undo world = do w <- world
-                if (checker w)
-                   then return w
-                   else return $ (w { board = (board w) { pieces = remove (pieces (board w)) 2 } })
-  where checker w = checkIfFirstTurn (pieces (board w))
+undo :: Int -> IO World -> IO World
+undo a world = do w <- world
+                  if (checker w)
+                     then return w
+                     else return $ (w { board = (board w) { pieces = remove (pieces (board w)) 2 } })
+    where checker w = checkIfFirstTurn (pieces (board w))
 
+--buttons for the loading screen
 
+sizeSet5Button :: Button
+sizeSet5Button = Button { topLeft = (-80, 130), bottomRight = (70, 100), value = "Set Size 5", action = (setSize 5) }
+sizeSet10Button :: Button
+sizeSet10Button = Button { topLeft = (80, 130), bottomRight = (230, 100), value = "Set Size 10", action = (setSize 10) }
+sizeSet19Button :: Button
+sizeSet19Button = Button { topLeft = (240, 130), bottomRight = (390, 100), value = "Set Size 19", action = (setSize 19) }
+targetSet3Button :: Button
+targetSet3Button = Button { topLeft = (-80, 90), bottomRight = (70, 60), value = "Set Target 3", action = (setTarget 3) }
+targetSet5Button :: Button
+targetSet5Button = Button { topLeft = (80, 90), bottomRight = (230, 60), value = "Set Target 5", action = (setTarget 5) }
+targetSet7Button :: Button
+targetSet7Button = Button { topLeft = (240, 90), bottomRight = (390, 60), value = "Set Target 7", action = (setTarget 7) }
+whiteButton :: Button
+whiteButton = Button { topLeft = (-80, 50), bottomRight = (70, 20), value = "Play as White", action = (setWhite 0) }
+blackButton :: Button
+blackButton = Button { topLeft = (80, 50), bottomRight = (230, 20), value = "Play as Black", action = (setBlack 0) }
+normalGameButton :: Button
+normalGameButton = Button { topLeft = (-80, 10), bottomRight = (70, -20), value = "Start Normal Game", action = (initNormal 0) }
+fourAndFourGameButton :: Button
+fourAndFourGameButton = Button { topLeft = (80, 10), bottomRight = (230, -20), value = "Start 4x4 Game", action = (initFourAndFour 0) }
+
+setSize :: Int -> IO World -> IO World
+setSize a w = do world <- w
+                 (return $ world { board = (board world) { size = a } })
+
+setTarget :: Int -> IO World -> IO World
+setTarget a w = do world <- w
+                   (return $ world { board = (board world) { target = a } })
+
+setWhite :: Int -> IO World -> IO World
+setWhite _ w = do world <- w
+                  (return $ world { player = White })
+
+setBlack :: Int -> IO World -> IO World
+setBlack _ w = do world <- w
+                  (return $ world { player = Black })
+
+initNormal :: Int -> IO World -> IO World
+initNormal _ w = do world <- w
+                    (initWorld (size (board world)) (target (board world)) [] Black (player world) ("normal") True)
+
+initFourAndFour :: Int -> IO World -> IO World
+initFourAndFour _ w = do world <- w
+                         (initWorld (size (board world)) (target (board world)) [] Black (player world) ("4x4") True)
 -- A Button that rolls back one turn for the current player
 undoButton :: Button
-undoButton = Button { topLeft = (-80, 0), bottomRight = (0, -30), value = "Undo Move", action = undo }
+undoButton = Button { topLeft = (-80, 0), bottomRight = (0, -30), value = "Undo Move", action = (undo 0) }
 
 
 -- A button to save the game
@@ -119,9 +168,7 @@ loadButton = Button { topLeft = (-80, -80), bottomRight = (0, -110), value = "Lo
 -- |Load the current game state from a file
 load :: IO World -> IO World
 load w = do world <- w
-            if ((player world) == Black)
-               then initWorld new_size new_target new_ps new_turn new_game_type True
-               else initWorld new_size new_target new_ps new_turn new_game_type False
+            initWorld new_size new_target new_ps (turn world) (player world) new_game_type True
          where f = readFile "save.dat" -- Read in the raw save file data
                ls = splitOn "\n" (unsafePerformIO f) -- Split the save file into lines
                top = splitOn " " (head ls) -- Grab each word from the top line of the save file
