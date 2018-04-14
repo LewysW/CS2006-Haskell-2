@@ -92,7 +92,7 @@ adjustButtons size = map adjustB
 -- A function that returns to the last turn of the current player, thus, it actually undoes 2 turns.
 undo :: Int -> IO World -> IO World
 undo a world = do w <- world
-                  if (checker w)
+                  if (checker w || (checkWon (board w) /= Nothing))
                      then return w
                      else return $ (w { board = (board w) { pieces = remove (pieces (board w)) 2 } })
     where checker w = checkIfFirstTurn (pieces (board w))
