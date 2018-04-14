@@ -65,10 +65,23 @@ buildTree gen b c = let moves = gen b c in -- generated moves
 getBestMove ::  Int -- ^ Maximum search depth
                -> GameTree -- ^ Initial game tree
                -> Position
---getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
-getBestMove maxD tree = trace(show (fst((next_moves tree)!! (getRandomIndex (length(next_moves tree)))))) fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
-displayPoss []=[]
-displayPoss (x:xs)=[fst x]++displayPoss xs
+getBestMove d tree = let middle = getMiddleOfBoard (size (game_board tree)) in
+                     if (getPiece (pieces (game_board tree)) middle) == Nothing then middle
+                     else if (length(pieces (game_board tree)) == 1) && ((getPiece (pieces (game_board tree)) middle) /= Nothing)
+                         then addT middle (-1, -1)
+                     else fst (maxTurn (next_moves tree) (game_turn tree))
+
+getMiddleOfBoard :: Int -> Position
+getMiddleOfBoard size = (size `div` 2, size `div` 2)
+
+maxTurn :: [(Position, GameTree)] -> Col -> (Position, GameTree)
+maxTurn nextMoves col = snd(head(sortByScore (evaluateNextMoves nextMoves col)))
+
+sortByScore :: [(Float, (Position, GameTree))] -> [(Float, (Position, GameTree))]
+sortByScore = sortBy (flip compare `on` fst)
+
+evaluateNextMoves :: [(Position, GameTree)] -> Col -> [(Float, (Position, GameTree))]
+evaluateNextMoves nextMoves col = map (\ nextMove -> (evaluate (game_board (snd nextMove)) col, nextMove)) nextMoves
 
 getRandomIndex :: Int -- List length
                 -> Int -- Pseudo-random index
