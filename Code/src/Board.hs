@@ -292,16 +292,16 @@ getScore board col = if ((target board) == 3)
                              - (4 * realToFrac(getNumClosed board col)))
                         else
                              (realToFrac(getNumConsecutive board col)
-                             + 17.5 * (getAverageLength board col)
+                             + 15 * (getAverageLength board col)
                              + (realToFrac(isWinningMove board col))
-                             - (4 * realToFrac(getNumClosed board col)))
+                             - (5 * realToFrac(getNumClosed board col)))
 
 
 
 
 --Checks for a potential win move and returns an overwhelming score
 isWinningMove :: Board -> Col -> Int
-isWinningMove board col = if (maxLength board col) >= ((target board)) && (potentialWin board col) then 20000
+isWinningMove board col = if (maxLength board col) == ((target board)) && (potentialWin board col) then 20000
                           else 0
 
 --Checks whether future moves can increase the size of the player's set to beyond the target, meaning the current move must be a win

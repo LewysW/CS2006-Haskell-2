@@ -97,11 +97,18 @@ getEmptyPos :: [(Position, Col)] --Pieces on board
 getEmptyPos [] size = range ((0, 0), (size - 1, size - 1))
 getEmptyPos pieces size = range ((0, 0), (size - 1, size - 1)) \\ (map fst pieces)
 
+--Takes a board, colour and position and returns the empty adjacent positions next to it
+getAdjacent :: Board -> Col -> (Position, Col) -> [Position]
+getAdjacent board col pos = let adjacentMoves = map (addT (fst(pos))) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)] in
+                            let emptyPositions = getEmptyPos (pieces board) (size board) in
+                            concat (map (\a -> filter (== a) (emptyPositions)) adjacentMoves)
+
+
 
 --Generates list of possible positions to be used to construct GameTree
 --Finds all legal moves for now TODO reduce size of moves to avoid combinatorial explosion
 gen :: Board -> Col -> [Position]
-gen board col = getEmptyPos (pieces board) (size board)
+gen board col = concat (map (getAdjacent (board) (col)) (pieces board))
 
 
 -- Function to update board by playing AI move (current search depth of 1 by default)
