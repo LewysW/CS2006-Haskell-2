@@ -193,6 +193,7 @@ parseSaveFile ls = (pos, col) : parseSaveFile (tail ls)
 
 --Check if it's the first turn.
 checkIfFirstTurn :: [(Position, Col)] -> Bool
+checkIfFirstTurn [] = False
 checkIfFirstTurn (x:xs) = b
   where b = checkIfOnePieceOnTheBoard xs
 
@@ -281,8 +282,22 @@ countBoardPieces x xs d size colour | (fst (fst x) < 0 || fst (fst x) >= size ||
 -- An evaluation function for board. Given a board and a colour
 -- return an integer (used float instead) indicating how good the board is for that colour.
 evaluate :: Board -> Col -> Float
-evaluate board col = (realToFrac(getNumConsecutive board col) + 17.5 * (getAverageLength board col) + (realToFrac(isWinningMove board col)) - (4 * realToFrac(getNumClosed board col)))
-                    - (realToFrac(getNumConsecutive board (other col)) + 17.5 * (getAverageLength board (other col)) + realToFrac(isWinningMove board (other col)) - (4 * realToFrac(getNumClosed board (other col))))
+evaluate board col = (getScore board col) - (getScore board (other col))
+
+getScore :: Board -> Col -> Float
+getScore board col = if ((target board) == 3)
+                        then (realToFrac(getNumConsecutive board col)
+                             + 17.5 * (getAverageLength board col)
+                             + (realToFrac(isWinningMove board col))
+                             - (4 * realToFrac(getNumClosed board col)))
+                        else
+                             (realToFrac(getNumConsecutive board col)
+                             + 17.5 * (getAverageLength board col)
+                             + (realToFrac(isWinningMove board col))
+                             - (4 * realToFrac(getNumClosed board col)))
+
+
+
 
 --Checks for a potential win move and returns an overwhelming score
 isWinningMove :: Board -> Col -> Int
