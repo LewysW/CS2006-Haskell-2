@@ -12,7 +12,7 @@ import Data.Maybe
 import System.IO.Unsafe
 
 
-spacing = 50
+spacing = 25
 
 data Col = Black | White
   deriving (Show, Eq, Read)
@@ -145,12 +145,12 @@ initFourAndFour _ w = do world <- w
                          (initWorld (size (board world)) (target (board world)) [] Black (player world) ("4x4") True)
 -- A Button that rolls back one turn for the current player
 undoButton :: Button
-undoButton = Button { topLeft = (-80, 0), bottomRight = (0, -30), value = "Undo Move", action = (undo 0) }
+undoButton = Button { topLeft = (-150, 0), bottomRight = (-70, -30), value = "Undo Move", action = (undo 0) }
 
 
 -- A button to save the game
 saveButton :: Button
-saveButton = Button { topLeft = (-80, -40), bottomRight = (0, -70), value = "Save Game", action = save }
+saveButton = Button { topLeft = (-150, -40), bottomRight = (-70, -70), value = "Save Game", action = save }
 
 save :: IO World -> IO World
 save w = do world <- w
@@ -163,7 +163,7 @@ outputPiece (p, c) = do appendFile "save.dat" ("\n" ++ show (fst p) ++ " " ++ sh
 
 -- A button to load the save file
 loadButton :: Button
-loadButton = Button { topLeft = (-80, -80), bottomRight = (0, -110), value = "Load Game", action = load }
+loadButton = Button { topLeft = (-150, -80), bottomRight = (-70, -110), value = "Load Game", action = load }
 
 -- |Load the current game state from a file
 load :: IO World -> IO World

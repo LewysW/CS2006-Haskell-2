@@ -20,22 +20,26 @@ drawLoading world = do w <- world
 
 drawWorld :: IO World -> IO Picture
 drawWorld world = do w <- world
-                     game_images <- sequence $ loadBMP "./Assets/empty_piece.bmp" : loadBMP "./Assets/black_piece.bmp" : loadBMP "./Assets/white_piece.bmp" : []
+                     game_images <- sequence $ loadBMP "./Assets/board.bmp" : loadBMP "./Assets/empty_piece.bmp" : loadBMP "./Assets/black_piece.bmp" : loadBMP "./Assets/white_piece.bmp" : []
                      button_images <- sequence $ loadBMP "./Assets/undo_button.bmp" : loadBMP "./Assets/save_button.bmp" : loadBMP "./Assets/load_button.bmp" : []
                      winscreen_images <- sequence $ loadBMP "./Assets/black_win.bmp" : loadBMP "./Assets/white_win.bmp" : []
                      if (running w)
-                        then trace("next") return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [] game_images)) : (Pictures (drawButtons (buttons w) [] button_images)) : (checkEnd w winscreen_images))
+                        then return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [] game_images)) : (Pictures (drawButtons (buttons w) [] button_images)) : (checkEnd w winscreen_images))
                      else (drawLoading world)
 
 
 -- Draw the board for the Gomoku game.
 drawBoard :: Board -> Position -> [Picture] -> [Picture] -> [Picture]
 drawBoard board (x, y) pics [] = pics
-drawBoard board (x, y) pics bmps | x == ((size board) - 1) && y == ((size board) - 1) = drawPiece board (x, y) bmps : pics
-                                 | x == ((size board) - 1) = line ((x, y), (x, y + 1)) : drawPiece board (x, y) bmps : drawBoard board (0, y + 1) pics bmps
-                                 | y == ((size board) - 1) = line ((x, y), (x + 1, y)) : drawPiece board (x, y) bmps : drawBoard board (x + 1, y) pics bmps
-                                 | otherwise = Pictures [line ((x, y), (x + 1, y)), line ((x, y), (x, y + 1))] : drawPiece board (x, y) bmps : drawBoard board (x + 1, y) pics bmps
-                                 where line ((x1, y1), (x2, y2)) = Color black $ Line [(fromIntegral (x1 * spacing), fromIntegral (y1 * spacing)), (fromIntegral (x2 * spacing), fromIntegral (y2 * spacing))]
+drawBoard board (x, y) pics bmps | x == 0 && y == 0 = boardPicture : drawPiece board (x, y) piecePictures : drawBoard board (x + 1, y) pics bmps
+                                 | x == ((size board) - 1) && y == ((size board) - 1) = drawPiece board (x, y) piecePictures : pics
+                                 | x == ((size board) - 1) = drawPiece board (x, y) piecePictures : drawBoard board (0, y + 1) pics bmps
+                                 | y == ((size board) - 1) = drawPiece board (x, y) piecePictures : drawBoard board (x + 1, y) pics bmps
+                                 | otherwise = drawPiece board (x, y) piecePictures : drawBoard board (x + 1, y) pics bmps
+                                 where s = (size board)
+                                       validLoc = s `div` 2
+                                       boardPicture = drawImage (validLoc, validLoc) (head bmps)
+                                       piecePictures = tail bmps
                                  --line ((x1, y1), (x2, y2)) draws a blue line from (x1, y1) to (x2, y2).
 
 
