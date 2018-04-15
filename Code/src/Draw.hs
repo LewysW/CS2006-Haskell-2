@@ -20,8 +20,8 @@ drawLoading world = do w <- world
 
 drawWorld :: IO World -> IO Picture
 drawWorld world = do w <- world
-                     game_images <- sequence $ loadBMP "./Assets/board.bmp" : loadBMP "./Assets/empty_piece.bmp" : loadBMP "./Assets/black_piece.bmp" : loadBMP "./Assets/white_piece.bmp" : []
-                     button_images <- sequence $ loadBMP "./Assets/undo_button.bmp" : loadBMP "./Assets/save_button.bmp" : loadBMP "./Assets/load_button.bmp" : []
+                     game_images <- sequence $ loadBMP "./Assets/board.bmp" : loadBMP "./Assets/empty_piece.bmp" : loadBMP "./Assets/hint_piece.bmp" : loadBMP "./Assets/black_piece.bmp" : loadBMP "./Assets/white_piece.bmp" : []
+                     button_images <- sequence $ loadBMP "./Assets/undo_button.bmp" : loadBMP "./Assets/save_button.bmp" : loadBMP "./Assets/load_button.bmp" : loadBMP "./Assets/hint_button.bmp" : []
                      winscreen_images <- sequence $ loadBMP "./Assets/black_win.bmp" : loadBMP "./Assets/white_win.bmp" : []
                      if (running w)
                         then return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [] game_images)) : (Pictures (drawButtons (buttons w) [] button_images)) : (checkEnd w winscreen_images))
@@ -47,16 +47,19 @@ drawBoard board (x, y) pics bmps | x == 0 && y == 0 = boardPicture : drawPiece b
 -- If the condition is satisfied, draw the piece by calling the drawCircle function with the particular colour.
 drawPiece :: Board -> Position -> [Picture] -> Picture
 drawPiece b p bmps = case getPiece (pieces b) p of
-                          Just piece -> drawCircle p (snd piece) bmps
-                          Nothing -> drawImage p (bmps!!0)
-              where col Black = Color black
-                    col White = Color white
+                          Just piece -> drawCircle p (snd piece) "nothint" bmps
+                          Nothing -> if (p /= (hint b) || (not(hints b)))
+                                        then drawImage p (bmps!!0)
+                                     else (drawCircle p Black "hint" bmps)
+          where col Black = Color black
+                col White = Color white
 
 
 -- Draw a Black or White chip in a given position
-drawCircle :: Position -> Col -> [Picture] -> Picture
-drawCircle (x, y) Black bmps = drawImage (x, y) (bmps!!1)
-drawCircle (x, y) White bmps = drawImage (x, y) (bmps!!2)
+drawCircle :: Position -> Col -> String -> [Picture] -> Picture
+drawCircle (x, y) Black "hint" bmps = drawImage (x, y) (bmps!!1)
+drawCircle (x, y) Black "nothint" bmps = drawImage (x, y) (bmps!!2)
+drawCircle (x, y) White "nothint" bmps = drawImage (x, y) (bmps!!3)
 
 -- Check whether the game is finished or not. If so, print out the winner of the game on the board.
 checkEnd :: World -> [Picture] -> [Picture]

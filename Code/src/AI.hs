@@ -85,10 +85,7 @@ evaluateNextMoves nextMoves col = map (\ nextMove -> (evaluate (game_board (snd 
 
 getRandomIndex :: Int -- List length
                 -> Int -- Pseudo-random index
-getRandomIndex len  = fromIntegral((unsafePerformIO getCPUTime) `mod` toInteger(len))
-
-
-
+getRandomIndex len = fromIntegral((unsafePerformIO getCPUTime) `mod` toInteger(len))
 
 --Gets list of empty positions (with no piece) on board for potential moves
 getEmptyPos :: [(Position, Col)] --Pieces on board
@@ -120,10 +117,12 @@ updateBoard board colour ai = let positions = (gen board colour) in
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> IO World -- ^ current world state
             -> IO (IO World)
-updateWorld t world = do w <- world
+updateWorld t world = do wo <- trace("updating world") world
+                         let bestMove = (getBestMove 1 (buildTree gen (board wo) (player wo)))
+                         let w = (wo { board = (board wo) { hint = bestMove } })
                          if ((turn w) /= (player w) && checkWon (board w) == Nothing && (((ai w)) /= ("pvp"))) --if not the player's turn
                             then return $ trace("turn " ++ show(turn w) ++ " ended") return w { board = fromJust(updateBoard (board w) (turn w) (ai w)), turn = other (turn w) }
-                         else return world
+                         else trace("got here") (return world)
 
 
 

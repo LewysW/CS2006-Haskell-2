@@ -22,6 +22,7 @@ other Black = White
 other White = Black
 
 type Position = (Int, Int)
+type Hint = Bool
 
 -- A Board is a record containing the board size (a board is a square grid,
 -- n * n), the number of pieces in a row required to win, and a list
@@ -33,7 +34,9 @@ type Position = (Int, Int)
 
 data Board = Board { size :: Int,
                      target :: Int,
-                     pieces :: [(Position, Col)]
+                     pieces :: [(Position, Col)],
+                     hint :: Position,
+                     hints :: Bool
                    }
   deriving Show
 
@@ -49,8 +52,8 @@ data Button = Button { topLeft :: Position,
 -- Default board is 6x6, target is 3 in a row, no initial pieces
 
 --Initialize the board.
-initBoard :: Int -> Int -> [(Position, Col)] -> Board
-initBoard s c ps = Board s c ps
+initBoard :: Int -> Int -> [(Position, Col)] -> Position -> Bool -> Board
+initBoard s t ps pos hints = Board s t ps pos hints
 
 -- Overall state is the board and whose turn it is, plus any further
 -- information about the world (this may later include, for example, player
@@ -71,12 +74,12 @@ data World = World { board :: Board,
 
 initWorld :: Int -> Int -> [(Position, Col)] -> Col -> Col -> String -> Bool -> String -> IO World
 initWorld size target history turn player game_type running ai = if running
-                                                  then return $ World (initBoard size target history) turn player game_type (gameButtons size) running ai
-                                                  else return $ World (initBoard size target history) turn player game_type (loadingButtons size) running ai
+                                                  then return $ World (initBoard size target history (0, 3) False) turn player game_type (gameButtons size) running ai
+                                                  else return $ World (initBoard size target history (0, 3) False) turn player game_type (loadingButtons size) running ai
 
 -- List of all buttons that the game uses.
 gameButtons :: Int -> [Button]
-gameButtons s = adjustButtons s [undoButton, saveButton, loadButton]
+gameButtons s = adjustButtons s [undoButton, saveButton, loadButton, hintsButton]
 
 -- List of all buttons that the game uses.
 loadingButtons :: Int -> [Button]
@@ -101,7 +104,7 @@ undo a world = do w <- world
 --buttons for the loading screen
 
 sizeSet5Button :: Button
-sizeSet5Button = Button { topLeft = (-80, 130), bottomRight = (70, 100), value = "Set Size 5", action = (setSize 5) }
+sizeSet5Button = Button { topLeft = (-80, 130), bottomRight = (70, 100), value = "Set Size 6", action = (setSize 6) }
 sizeSet10Button :: Button
 sizeSet10Button = Button { topLeft = (80, 130), bottomRight = (230, 100), value = "Set Size 10", action = (setSize 10) }
 sizeSet19Button :: Button
@@ -162,6 +165,14 @@ initFourAndFour _ w = do world <- w
 undoButton :: Button
 undoButton = Button { topLeft = (-150, 0), bottomRight = (-70, -30), value = "Undo Move", action = (undo 0) }
 
+hintsButton :: Button
+hintsButton = Button { topLeft = (-150, -120), bottomRight = (-70, -150), value = "Toggle Hints", action = (toggleHints) }
+
+-- A button that enables or disables the displaying of hints
+toggleHints :: IO World -> IO World
+toggleHints w = do world <- w
+                   let hintsVar = (hints (board world))
+                   (return $ world { board = (board world) { hints = not hintsVar } })
 
 -- A button to save the game
 saveButton :: Button

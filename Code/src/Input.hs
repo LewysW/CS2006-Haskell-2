@@ -43,7 +43,7 @@ checkButtons w _ [] = w
 -- If the click was made on the button's position
 checkButtons w (xm, ym) (b:bs) = if xm > fst (topLeft b) && xm < fst (bottomRight b) && ym < snd (topLeft b) && ym > snd (bottomRight b)
                                     then (action b w) -- Run the buttons's function and return
-                                 else (checkButtons w (xm, ym) bs) -- Otherwise check the rest of the buttons
+                                 else trace("handling buttons") (checkButtons w (xm, ym) bs) -- Otherwise check the rest of the buttons
 
 getPosition :: Position -> Position -> Int -> Maybe Position
 -- Check all possible points on the grid and compare to converted coordinates
