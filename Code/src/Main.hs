@@ -25,7 +25,7 @@ import AI
 main :: IO ()
 main = do args <- getArgs
           if (length(args) /= 5 && length(args) /= 0)
-            then print("Usage: ./gomoku <board_size (Int)> <target (Int)> <player (White/Black)> <game_type (normal/4x4)> <ai>")
+            then print("Usage: ./gomoku <board_size (Int)> <target (Int)> <player (White/Black)> <game_type (normal/4x4)> <beginner/intermediate/pvp>")
           else if (length(args) == 0)
             then playIO (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 10 (initWorld 6 3 [] Black White "normal" False "pvp") drawWorld handleInput updateWorld
           else do
