@@ -73,8 +73,8 @@ data World = World { board :: Board,
 
 
 initWorld :: Int -> Int -> [(Position, Col)] -> Col -> Col -> String -> Bool -> String -> IO World
-initWorld size target history turn player game_type running ai = if running
-                                                  then return $ World (initBoard size target history (0, 3) False) turn player game_type (gameButtons size) running ai
+initWorld size target history turn player game_type running ai = if running -- set default hint position as the middle piece TODO
+                                                  then return $ World (initBoard size target history (0, 0) False) turn player game_type (gameButtons size) running ai
                                                   else return $ World (initBoard size target history (0, 3) False) turn player game_type (loadingButtons size) running ai
 
 -- List of all buttons that the game uses.
@@ -314,12 +314,12 @@ getScore :: Board -> Col -> Float
 getScore board col = if ((target board) == 3)
                         then (realToFrac(getNumConsecutive board col)
                              + 17.5 * (getAverageLength board col)
-                             + (realToFrac(isWinningMove board col))
+                             + (realToFrac(maxLength board col))
                              - (4 * realToFrac(getNumClosed board col)))
                         else
                              (realToFrac(getNumConsecutive board col)
                              + 15 * (getAverageLength board col)
-                             + (realToFrac(maxLength board col))
+                             + (realToFrac(isWinningMove board col))
                              - (4 * realToFrac(getNumClosed board col)))
 
 
@@ -327,7 +327,7 @@ getScore board col = if ((target board) == 3)
 
 --Checks for a potential win move and returns an overwhelming score
 isWinningMove :: Board -> Col -> Int
-isWinningMove board col = if (maxLength board col) == ((target board)) && (potentialWin board col) then 20000
+isWinningMove board col = if (maxLength board col) >= ((target board)) && (potentialWin board col) then 20000
                           else if ((maxLength board col) == ((target board) - 1)) then 10000
                           else 0
 
@@ -339,7 +339,7 @@ potentialWin board col = let newBoards = potentialBoards board col in
 
 --Generates all potential board layouts for future moves
 potentialBoards :: Board -> Col -> [Board]
-potentialBoards board col = catMaybes (map (makeMove board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])
+potentialBoards board col = trace("potential boards") (catMaybes (map (makeMove board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]))
 
 -- Returns maximum length of set on board
 maxLength :: Board -> Col -> Int
