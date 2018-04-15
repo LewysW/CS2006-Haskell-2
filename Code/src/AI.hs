@@ -108,17 +108,21 @@ gen board col = getEmptyPos (pieces board) (size board)
 -- Position is determined by building a list of empty moves (gen),
 -- generating a tree from this list (buildTree), finding the best move in this GameTree
 -- using getBestMove (currently just a random move) and making the move at this positions
--- using makeMove
-updateBoard :: Board -> Col -> Maybe Board
-updateBoard board colour = makeMove board colour (getBestMove 1 (buildTree gen board colour))
+-- using makeMoves
+updateBoard :: Board -> Col -> String -> Maybe Board
+updateBoard board colour ai = let positions = (gen board colour) in
+                                  case ai of
+                                  "beginner" -> makeMove board colour ((positions)!!(getRandomIndex (length(positions))))
+                                  "intermediate" -> makeMove board colour (getBestMove 1 (buildTree gen board colour))
+
 
 -- Update the world state after some time has passed
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> IO World -- ^ current world state
             -> IO (IO World)
 updateWorld t world = do w <- world
-                         if ((turn w) /= (player w) && checkWon (board w) == Nothing) --if not the player's turn
-                            then return $ trace("turn " ++ show(turn w) ++ " ended") return w { board = fromJust(updateBoard (board w) (turn w)), turn = other (turn w) }
+                         if ((turn w) /= (player w) && checkWon (board w) == Nothing && (((ai w)) /= ("pvp"))) --if not the player's turn
+                            then return $ trace("turn " ++ show(turn w) ++ " ended") return w { board = fromJust(updateBoard (board w) (turn w) (ai w)), turn = other (turn w) }
                          else return world
 
 
