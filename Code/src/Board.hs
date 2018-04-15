@@ -80,7 +80,7 @@ gameButtons s = adjustButtons s [undoButton, saveButton, loadButton]
 
 -- List of all buttons that the game uses.
 loadingButtons :: Int -> [Button]
-loadingButtons s = adjustButtons s [sizeSet5Button, sizeSet10Button, sizeSet19Button, targetSet3Button, targetSet5Button, targetSet7Button, whiteButton, blackButton, normalGameButton, fourAndFourGameButton]
+loadingButtons s = adjustButtons s [sizeSet5Button, sizeSet10Button, sizeSet19Button, targetSet3Button, targetSet5Button, targetSet7Button, whiteButton, blackButton, aiBeginnerButton, aiIntermediateButton, aiPVPButton, normalGameButton, fourAndFourGameButton]
 
 getSize size = (fromIntegral ( ((size - 1) * spacing)) / 2)
 
@@ -106,20 +106,30 @@ sizeSet10Button :: Button
 sizeSet10Button = Button { topLeft = (80, 130), bottomRight = (230, 100), value = "Set Size 10", action = (setSize 10) }
 sizeSet19Button :: Button
 sizeSet19Button = Button { topLeft = (240, 130), bottomRight = (390, 100), value = "Set Size 19", action = (setSize 19) }
+
 targetSet3Button :: Button
 targetSet3Button = Button { topLeft = (-80, 90), bottomRight = (70, 60), value = "Set Target 3", action = (setTarget 3) }
 targetSet5Button :: Button
 targetSet5Button = Button { topLeft = (80, 90), bottomRight = (230, 60), value = "Set Target 5", action = (setTarget 5) }
 targetSet7Button :: Button
 targetSet7Button = Button { topLeft = (240, 90), bottomRight = (390, 60), value = "Set Target 7", action = (setTarget 7) }
+
 whiteButton :: Button
 whiteButton = Button { topLeft = (-80, 50), bottomRight = (70, 20), value = "Play as White", action = (setWhite 0) }
 blackButton :: Button
 blackButton = Button { topLeft = (80, 50), bottomRight = (230, 20), value = "Play as Black", action = (setBlack 0) }
+
+aiBeginnerButton :: Button
+aiBeginnerButton = Button { topLeft = (-80, 10), bottomRight = (70, -20), value = "Beginner AI", action = (setAI "beginner") }
+aiIntermediateButton :: Button
+aiIntermediateButton = Button { topLeft = (80, 10), bottomRight = (230, -20), value = "Intermediate AI", action = (setAI "intermediate") }
+aiPVPButton :: Button
+aiPVPButton = Button { topLeft = (240, 10), bottomRight = (390, -20), value = "PVP AI", action = (setAI "pvp") }
+
 normalGameButton :: Button
-normalGameButton = Button { topLeft = (-80, 10), bottomRight = (70, -20), value = "Start Normal Game", action = (initNormal 0) }
+normalGameButton = Button { topLeft = (-80, -30), bottomRight = (70, -60), value = "Start Normal Game", action = (initNormal 0) }
 fourAndFourGameButton :: Button
-fourAndFourGameButton = Button { topLeft = (80, 10), bottomRight = (230, -20), value = "Start 4x4 Game", action = (initFourAndFour 0) }
+fourAndFourGameButton = Button { topLeft = (80, -30), bottomRight = (230, -60), value = "Start 4x4 Game", action = (initFourAndFour 0) }
 
 setSize :: Int -> IO World -> IO World
 setSize a w = do world <- w
@@ -136,6 +146,10 @@ setWhite _ w = do world <- w
 setBlack :: Int -> IO World -> IO World
 setBlack _ w = do world <- w
                   (return $ world { player = Black })
+
+setAI :: String -> IO World -> IO World
+setAI level w = do world <- w
+                   (return $ world { ai = level })
 
 initNormal :: Int -> IO World -> IO World
 initNormal _ w = do world <- w
