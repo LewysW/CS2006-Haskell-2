@@ -1,0 +1,96 @@
+Basic requirements
+
+Board.hs
+
+1. initWorld & initBoard
+These functions make the initial world and initial board to play the gomoku game.
+
+2. makeMove
+The aim of this function is to check if the user could put new piece on the given position.
+It calls the getPiece function to check if there is a piece on the given position.
+If the getPiece function returns Nothing, it adds new piece on the board.
+Otherwise, it returns Nothing.
+
+3. getPiece
+By calling itself recursively, it compares all positions of the existing pieces with the given position.
+It returns Nothing when there are no corresponding piece on the given position.
+Otherwise, it returns the Just x.
+
+4. checkWon
+This function checks whether the board is in a winning state for either player by calling the checkPiecesOnTheBoard.
+
+5. checkBoardPieces
+The checkBoardPieces checks all 8 possible directions of the given piece by calling the countBoardPieces function to check whether the board is in a winning state for either player.
+It call itself recursively to check all pieces on the board.
+
+6. countBoardPieces
+The countBoardPieces function takes a piece, direction, size and colour as command line arguments.
+Firstly, it checks if the given position is in the bound of the board.
+Then, it count the number of the pieces in the given direction by calling itself recursively.
+And it returns the number of total counts.
+
+
+Draw.hs
+
+1. drawWorld
+It draws the graphical output to print out the game by calling the drawBoard function.
+(For the medium extension, now it reads the bmp images, and prints out those images)
+
+2. drawBoard
+This function draws the board for the gomoku game.
+When this function is called, it checks the current position and print out the suitable images.
+For example, if the current position is (0,0), this function prints out the bmp image of the game board.
+To print out all pieces and brown dots, it calls the drawPiece function.
+It calls itself recursively to print out all required images.
+
+3. drawPiece
+The drawPiece calls the getPiece function in the Board.hs file to check if there is any piece on the current position.
+If so, it draws the piece with the suitable colour.
+If not, it prints out the brown dot bmp image.
+
+4. drawImage
+It draws the proper bmp image on the given position.
+
+5. drawCircle
+This function draws the piece on the given position with suitable colour.
+
+6. checkEnd
+This function calls the checkWon function in the Board.hs file.
+If the game is end, it prints out the winner of the game by calling the printOutWinner.
+
+7. printOutWinner
+At first, it prints out the text "White Wins" or "Black Wins".
+However, now our program uses the bmp images, thus, it prints out the suitable winner image on the board.
+
+
+Input.hs
+
+1. handleInput
+Before doing the extension, it simply calls the getPosition function to check all possible points on the grid, and put the piece on the corresponding position.
+After doing the extension, it checks the game type (if the current game is normal game or 4x4 version), and check if the user pressed the button by calling the checkButtons function. Then, it calls the getPosition function to check all possible points on the grid, and put the piece on the corresponding position.
+
+2. getPosition
+Check all possible points on the grid by calling the isPos function. It call itself recursively to check all possible points.
+
+3. isPos
+It compares the current position with the pressed position. Moreover, it checks if the pressed position is not in the bound of the board.
+
+
+
+Extension
+
+Undo (easy)
+
+1. data Button -> Board.hs
+Make a new type "Button" to create the undo button.
+
+2. undo -> Board.hs
+This function gets the list of the position that the board contains, and delete 2 recent elements.
+So, it returns to the last turn of the current player, thus, it actually undoes 2 turns.
+
+3. undoButton -> Board.hs
+It creates the instance of undo button, which allows the user to use the undo feature.
+
+4. adjustButtons
+This function adjust the size of the button. At first, as we only got 1 button, this function only adjust the undo button.
+However, we made multiple buttons later, we used map function to adjust all buttons.
