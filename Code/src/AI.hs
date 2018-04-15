@@ -97,7 +97,7 @@ getEmptyPos pieces size = range ((0, 0), (size - 1, size - 1)) \\ (map fst piece
 --Generates list of possible positions to be used to construct GameTree
 --Finds all legal moves for now TODO reduce size of moves to avoid combinatorial explosion
 gen :: Board -> Col -> [Position]
-gen board col = getEmptyPos (pieces board) (size board)
+gen board col = trace("gen") getEmptyPos (pieces board) (size board)
 
 
 -- Function to update board by playing AI move (current search depth of 1 by default)

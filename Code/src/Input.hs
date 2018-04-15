@@ -20,16 +20,16 @@ handleInput (EventKey (MouseButton LeftButton) Up m (x, y)) world =
     -- If the AI is playing, do not accept input
      case (running w) of
        True -> case checkWon (board w) of -- Check if the game has been finished
-                    Just c  -> return $ handleButtons world (x, y) -- Player won, check for button presses but not moves
+                    Just c  -> return (handleButtons world (x, y)) -- Player won, check for button presses but not moves
                     Nothing -> case getPosition (0, 0) (floor x, floor y) (size (board w)) of -- Try getting the position on the board of the point clicked
                                     Just pos -> case ((game_type w) == "4x4" && (checkFourAndFour (board w) (turn w) pos)) of
-                                                     True -> return $ handleButtons world (x, y)
+                                                     True -> return (handleButtons world (x, y))
                                                      otherwise -> case makeMove (board w) (turn w) pos of -- If it is an actual position, make a move
-                                                                      Just b  -> return $ handleButtons (nextTurn w b) (x, y) -- Set the new board and turn and check buttons for clicking
-                                                                      Nothing -> return $ handleButtons world (x, y)-- Or make no change and check buttons for clicking
+                                                                      Just b  -> return (handleButtons (nextTurn w b) (x, y)) -- Set the new board and turn and check buttons for clicking
+                                                                      Nothing -> return (handleButtons world (x, y))-- Or make no change and check buttons for clicking
                                     Nothing  -> return $ handleButtons world (x, y) -- Otherwise there is nothing there, so ignore it and check the buttons for clicking
-       False -> (return $ handleButtons world (x, y))
-  where nextTurn w b = return w { board = b, turn = other (turn w) }
+       False -> (return (handleButtons world (x, y)))
+  where nextTurn w b = return (w { board = b, turn = other (turn w) })
         handleButtons w (x, y) = do world <- w
                                     checkButtons w (floor x, floor y) (buttons world)
 
