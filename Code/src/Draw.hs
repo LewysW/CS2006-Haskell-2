@@ -46,7 +46,7 @@ drawPiece b p bmps = case getPiece (pieces b) p of
                           Just piece -> drawCircle p (snd piece) "nothint" bmps
                           Nothing -> if (p == (hint b) && ((hints b)))
                                         then (drawCircle p Black "hint" bmps)
-                                     else (drawCircle p Black "blue" bmps)
+                                     else (drawCircle p Black "grey" bmps)
           where col Black = Color black
                 col White = Color white
 
@@ -56,7 +56,7 @@ drawCircle :: Position -> Col -> String -> [Picture] -> Picture
 drawCircle (x, y) Black "hint" bmps = drawImage (x, y) (bmps!!0)
 drawCircle (x, y) Black "nothint" bmps = drawImage (x, y) (bmps!!1)
 drawCircle (x, y) White "nothint" bmps = drawImage (x, y) (bmps!!2)
-drawCircle (x, y) Black "blue" bmps = (Color blue $ Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 2 2)
+drawCircle (x, y) Black "grey" bmps = (Color (greyN 0.4) $ Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 2 2)
 
 -- Check whether the game is finished or not. If so, print out the winner of the game on the board.
 checkEnd :: World -> [Picture] -> [Picture]
