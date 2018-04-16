@@ -16,34 +16,34 @@ import Debug.Trace
 -- to stderr, which can be a very useful way of debugging!
 handleInput :: Event -> IO World -> IO (IO World)
 handleInput (EventKey (MouseButton LeftButton) Up m (x, y)) world =
-  do w <- world
+  do w <- trace("got mouse click event") world
     -- If the AI is playing, do not accept input
      case (running w) of
        True -> case checkWon (board w) of -- Check if the game has been finished
-                    Just c  -> return (handleButtons world (x, y)) -- Player won, check for button presses but not moves
+                    Just c  -> (handleButtons world (x, y)) -- Player won, check for button presses but not moves
                     Nothing -> case getPosition (0, 0) (floor x, floor y) (size (board w)) of -- Try getting the position on the board of the point clicked
                                     Just pos -> case ((game_type w) == "4x4" && (checkFourAndFour (board w) (turn w) pos)) of
-                                                     True -> return (handleButtons world (x, y))
+                                                     True -> (handleButtons world (x, y))
                                                      otherwise -> case makeMove (board w) (turn w) pos of -- If it is an actual position, make a move
-                                                                      Just b  -> return (handleButtons (nextTurn w b) (x, y)) -- Set the new board and turn and check buttons for clicking
-                                                                      Nothing -> return (handleButtons world (x, y))-- Or make no change and check buttons for clicking
-                                    Nothing  -> return $ handleButtons world (x, y) -- Otherwise there is nothing there, so ignore it and check the buttons for clicking
-       False -> (return (handleButtons world (x, y)))
+                                                                      Just b  -> (handleButtons (nextTurn w b) (x, y)) -- Set the new board and turn and check buttons for clicking
+                                                                      Nothing -> (handleButtons world (x, y))-- Or make no change and check buttons for clicking
+                                    Nothing  ->  handleButtons world (x, y) -- Otherwise there is nothing there, so ignore it and check the buttons for clicking
+       False -> ((handleButtons world (x, y)))
   where nextTurn w b = return (w { board = b, turn = other (turn w) })
         handleButtons w (x, y) = do world <- w
-                                    checkButtons w (floor x, floor y) (buttons world)
+                                    return (checkButtons w (floor x, floor y) (buttons world))
 
 
 handleInput e b = return b
 
 
 checkButtons :: IO World -> Position -> [Button] -> IO World
-checkButtons w _ [] = w
+checkButtons w _ [] = trace("base case") (w)
 -- Where w is the world, xm;ym are mouse coordinates, b is button, bs is list
 -- If the click was made on the button's position
 checkButtons w (xm, ym) (b:bs) = if xm > fst (topLeft b) && xm < fst (bottomRight b) && ym < snd (topLeft b) && ym > snd (bottomRight b)
                                     then (action b w) -- Run the buttons's function and return
-                                 else trace("handling buttons") (checkButtons w (xm, ym) bs) -- Otherwise check the rest of the buttons
+                                 else trace("handling buttons " ++ (value b)) ((checkButtons w (xm, ym) bs)) -- Otherwise check the rest of the buttons
 
 getPosition :: Position -> Position -> Int -> Maybe Position
 -- Check all possible points on the grid and compare to converted coordinates
