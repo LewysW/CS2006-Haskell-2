@@ -20,7 +20,7 @@ drawLoading world = do w <- world
 
 drawWorld :: IO World -> IO Picture
 drawWorld world = do w <- world
-                     game_images <- sequence $ loadBMP "./Assets/board.bmp" : loadBMP "./Assets/empty_piece.bmp" : loadBMP "./Assets/hint_piece.bmp" : loadBMP "./Assets/black_piece.bmp" : loadBMP "./Assets/white_piece.bmp" : []
+                     game_images <- sequence $ loadBMP "./Assets/hint_piece.bmp" : loadBMP "./Assets/black_piece.bmp" : loadBMP "./Assets/white_piece.bmp" : []
                      button_images <- sequence $ loadBMP "./Assets/undo_button.bmp" : loadBMP "./Assets/save_button.bmp" : loadBMP "./Assets/load_button.bmp" : loadBMP "./Assets/hint_button.bmp" : []
                      winscreen_images <- sequence $ loadBMP "./Assets/black_win.bmp" : loadBMP "./Assets/white_win.bmp" : []
                      if (running w)
@@ -31,16 +31,12 @@ drawWorld world = do w <- world
 -- Draw the board for the Gomoku game.
 drawBoard :: Board -> Position -> [Picture] -> [Picture] -> [Picture]
 drawBoard board (x, y) pics [] = pics
-drawBoard board (x, y) pics bmps | x == 0 && y == 0 = boardPicture : drawPiece board (x, y) piecePictures : drawBoard board (x + 1, y) pics bmps
-                                 | x == ((size board) - 1) && y == ((size board) - 1) = drawPiece board (x, y) piecePictures : pics
-                                 | x == ((size board) - 1) = drawPiece board (x, y) piecePictures : drawBoard board (0, y + 1) pics bmps
-                                 | y == ((size board) - 1) = drawPiece board (x, y) piecePictures : drawBoard board (x + 1, y) pics bmps
-                                 | otherwise = drawPiece board (x, y) piecePictures : drawBoard board (x + 1, y) pics bmps
-                                 where s = (size board)
-                                       validLoc = s `div` 2
-                                       boardPicture = drawImage (validLoc, validLoc) (head bmps)
-                                       piecePictures = tail bmps
-                                 --line ((x1, y1), (x2, y2)) draws a blue line from (x1, y1) to (x2, y2).
+drawBoard board (x, y) pics bmps | x == ((size board) - 1) && y == ((size board) - 1) = drawPiece board (x, y) bmps : pics
+                                 | x == ((size board) - 1) = line ((x, y), (x, y + 1)) : drawPiece board (x, y) bmps : drawBoard board (0, y + 1) pics bmps
+                                 | y == ((size board) - 1) = line ((x, y), (x + 1, y)) : drawPiece board (x, y) bmps : drawBoard board (x + 1, y) pics bmps
+                                 | otherwise = Pictures [line ((x, y), (x + 1, y)), line ((x, y), (x, y + 1))] : drawPiece board (x, y) bmps : drawBoard board (x + 1, y) pics bmps
+                                 where line ((x1, y1), (x2, y2)) = Color black $ Line [(fromIntegral (x1 * spacing), fromIntegral (y1 * spacing)), (fromIntegral (x2 * spacing), fromIntegral (y2 * spacing))]
+
 
 
 -- Draw the piece if there is a piece on the particular position.
@@ -48,18 +44,19 @@ drawBoard board (x, y) pics bmps | x == 0 && y == 0 = boardPicture : drawPiece b
 drawPiece :: Board -> Position -> [Picture] -> Picture
 drawPiece b p bmps = case getPiece (pieces b) p of
                           Just piece -> drawCircle p (snd piece) "nothint" bmps
-                          Nothing -> if (p /= (hint b) || (not(hints b)))
-                                        then drawImage p (bmps!!0)
-                                     else (drawCircle p Black "hint" bmps)
+                          Nothing -> if (p == (hint b) && ((hints b)))
+                                        then (drawCircle p Black "hint" bmps)
+                                     else (drawCircle p Black "blue" bmps)
           where col Black = Color black
                 col White = Color white
 
 
 -- Draw a Black or White chip in a given position
 drawCircle :: Position -> Col -> String -> [Picture] -> Picture
-drawCircle (x, y) Black "hint" bmps = drawImage (x, y) (bmps!!1)
-drawCircle (x, y) Black "nothint" bmps = drawImage (x, y) (bmps!!2)
-drawCircle (x, y) White "nothint" bmps = drawImage (x, y) (bmps!!3)
+drawCircle (x, y) Black "hint" bmps = drawImage (x, y) (bmps!!0)
+drawCircle (x, y) Black "nothint" bmps = drawImage (x, y) (bmps!!1)
+drawCircle (x, y) White "nothint" bmps = drawImage (x, y) (bmps!!2)
+drawCircle (x, y) Black "blue" bmps = (Color blue $ Translate (fromIntegral (x * spacing)) (fromIntegral (y * spacing)) $ ThickCircle 2 2)
 
 -- Check whether the game is finished or not. If so, print out the winner of the game on the board.
 checkEnd :: World -> [Picture] -> [Picture]

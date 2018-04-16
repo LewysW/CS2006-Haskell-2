@@ -29,12 +29,12 @@ version :: Version
 version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
-bindir     = "/Users/Kristo/Library/Haskell/bin"
-libdir     = "/Users/Kristo/Library/Haskell/ghc-8.2.2-x86_64/lib/Gomoku-0.1.0.0"
-dynlibdir  = "/Users/Kristo/Library/Haskell/ghc-8.2.2-x86_64/lib/x86_64-osx-ghc-8.2.2"
-datadir    = "/Users/Kristo/Library/Haskell/share/ghc-8.2.2-x86_64/Gomoku-0.1.0.0"
-libexecdir = "/Users/Kristo/Library/Haskell/libexec/x86_64-osx-ghc-8.2.2/Gomoku-0.1.0.0"
-sysconfdir = "/Users/Kristo/Library/Haskell/etc"
+bindir     = "/Users/CY/Library/Haskell/bin"
+libdir     = "/Users/CY/Library/Haskell/ghc-8.2.2-x86_64/lib/Gomoku-0.1.0.0"
+dynlibdir  = "/Users/CY/Library/Haskell/ghc-8.2.2-x86_64/lib/x86_64-osx-ghc-8.2.2"
+datadir    = "/Users/CY/Library/Haskell/share/ghc-8.2.2-x86_64/Gomoku-0.1.0.0"
+libexecdir = "/Users/CY/Library/Haskell/libexec/x86_64-osx-ghc-8.2.2/Gomoku-0.1.0.0"
+sysconfdir = "/Users/CY/Library/Haskell/etc"
 
 getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: IO FilePath
 getBinDir = catchIO (getEnv "Gomoku_bindir") (\_ -> return bindir)

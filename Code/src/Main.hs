@@ -27,14 +27,14 @@ main = do args <- getArgs
           if (length(args) /= 5 && length(args) /= 0)
             then print("Usage: ./gomoku <board_size (Int)> <target (Int)> <player (White/Black)> <game_type (normal/4x4)> <ai_level (beginner/intermediate/pvp)>")
           else if (length(args) == 0)
-            then playIO (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 10 (initWorld 6 3 False [] Black White "normal" False "intermediate") drawWorld handleInput updateWorld
+            then playIO (InWindow "Gomoku" (840, 700) (10, 10)) (makeColor 0.7333 0.5569 0.2509 0) 10 (initWorld 6 3 False [] Black White "normal" False "intermediate") drawWorld handleInput updateWorld
           else do
             let size = read (args!!0) :: Int
             let target = read (args!!1) :: Int
             let player = read (args!!2) :: Col
             let game_type = (args!!3)
             let ai = (args!!4)
-            playIO (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 3 (initWorld size target False [] Black player game_type True ai) drawWorld handleInput updateWorld
+            playIO (InWindow "Gomoku" (840, 700) (10, 10)) (makeColor 0.7333 0.5569 0.2509 0) 3 (initWorld size target False [] Black player game_type True ai) drawWorld handleInput updateWorld
           -- initWorld in Board.hs
           -- drawWorld in Draw.hs
           -- handleInput in Input.hs

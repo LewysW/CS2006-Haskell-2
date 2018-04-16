@@ -12,7 +12,7 @@ import Data.Maybe
 import System.IO.Unsafe
 
 
-spacing = 25
+spacing = 50
 
 data Col = Black | White
   deriving (Show, Eq, Read)
