@@ -284,7 +284,7 @@ checkBoardPieces (x:xs) board | (countBoardPieces x pb (0, 1) sb (snd x)) + (cou
                                    | (countBoardPieces x pb (1, 0) sb (snd x)) + (countBoardPieces x pb (-1, 0) sb (snd x)) - 1 == tb = Just (snd x) -- East & West
                                    | (countBoardPieces x pb (1, 1) sb (snd x)) + (countBoardPieces x pb (-1, -1) sb (snd x)) - 1 == tb = Just (snd x) -- North East & South West
                                    | (countBoardPieces x pb (-1, 1) sb (snd x)) + (countBoardPieces x pb (1, -1) sb (snd x)) - 1 == tb = Just (snd x) -- North West & South East
-                                   | otherwise = checkBoardPieces xs board
+                                   | otherwise = checkBoardPieces [] board
                                    where pb = pieces board
                                          sb = size board
                                          tb = target board
