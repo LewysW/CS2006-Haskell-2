@@ -34,7 +34,7 @@ main = do args <- getArgs
             let player = read (args!!2) :: Col
             let game_type = (args!!3)
             let ai = (args!!4)
-            playIO (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 10 (initWorld size target [] Black player game_type True ai) drawWorld handleInput updateWorld
+            playIO (InWindow "Gomoku" (840, 700) (10, 10)) (greyN 0.4) 3 (initWorld size target [] Black player game_type True ai) drawWorld handleInput updateWorld
           -- initWorld in Board.hs
           -- drawWorld in Draw.hs
           -- handleInput in Input.hs
