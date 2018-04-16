@@ -74,8 +74,9 @@ data World = World { board :: Board,
 
 initWorld :: Int -> Int -> [(Position, Col)] -> Col -> Col -> String -> Bool -> String -> IO World
 initWorld size target history turn player game_type running ai = if running -- set default hint position as the middle piece TODO
-                                                  then return $ World (initBoard size target history (0, 0) False) turn player game_type (gameButtons size) running ai
-                                                  else return $ World (initBoard size target history (0, 3) False) turn player game_type (loadingButtons size) running ai
+                                                  then return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn player game_type (gameButtons size) running ai
+                                                  else return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn player game_type (loadingButtons size) running ai
+  where calcPos size = (size `div` 2)
 
 -- List of all buttons that the game uses.
 gameButtons :: Int -> [Button]
