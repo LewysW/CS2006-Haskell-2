@@ -400,24 +400,9 @@ addT x y = ((fst x) + (fst y), (snd x) + (snd y))
 
 --for easy rule extension
 
-getNumOpenEndedSets :: Board -> Col -> Int
-getNumOpenEndedSets board col = undefined
-
--- checkFourAndFour :: Board -> C- (realToFrac(getNumConsecutive board (other col)) + 10 *(getAverageLength board (other col)) + 5 * realToFrac(maxLength board (other col)) + realToFrac(isWinningMove board (other col)) - (0.25 * realToFrac(getNumClol -> Position -> Bool
--- checkFourAndFour board col pos | countOpen board col pos == 2 = True
---                                  | otherwise = False
-
---countOpen :: Board -> Col -> Position -> Int
---countOpen board col pos =
-
 checkFourAndFour :: Board -> Col -> Position -> Bool
 checkFourAndFour board col pos | trace(show(countOpenAndClosed board col pos 4)) (countOpenAndClosed board col pos 4) >= 5 = True
                                | otherwise = False
-
---checkThreeAndThree board col pos = False
-
---countOpen :: Board -> Col -> Position -> Int
---countOpen board col pos =
 
 countOpenAndClosed :: Board -> Col -> Position -> Int -> Int
 countOpenAndClosed board col pos target = checkAllBoardPieces ((pos, col) : (pieces board)) ((pos, col) : (pieces board)) board target col
