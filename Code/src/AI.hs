@@ -99,7 +99,7 @@ updateBoard :: World -> Col -> String -> Maybe World
 updateBoard w colour ai = let positions = (gen (board w) colour) in
                                   case ai of
                                   "beginner" -> Just (w {board = fromJust (makeMove (board w) colour ((positions)!!(getRandomIndex (length(positions))))), isUpdated = True, turn = other (turn w)})
-                                  "intermediate" -> if not (isUpdated w)
+                                  "intermediate" -> if (not (isUpdated w)) || (pieces (board w)) == []
                                                        then Just (w {board = fromJust (makeMove (board w) colour (getBestMove 1 (buildTree gen (board w) colour))), isUpdated = True, turn = other (turn w)})
                                                     else Just w
 
@@ -112,7 +112,7 @@ updateWorld t world = do wo <- trace("updating world") world
                          let bestMove = (getBestMove 1 (buildTree gen (board wo) (player wo)))
                          let w = (wo { board = (board wo) { hint = bestMove } })
                          if (((turn w) /= (player w)) && ((checkWon (board w)) == Nothing) && (((ai w)) /= ("pvp"))) --if not the player's turn
-                            then return $ trace("turn " ++ show(turn w) ++ " ended") return (fromJust(updateBoard w (turn w) (ai w)))
+                            then return $ trace("turn " ++ show(turn w) ++ " ended") return (trace("testing") (fromJust(updateBoard w (turn w) (ai w))))
                          else trace("got here") (return world)
 
 
