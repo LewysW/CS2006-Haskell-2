@@ -29,7 +29,7 @@ handleInput (EventKey (MouseButton LeftButton) Up m (x, y)) world =
                                                                       Nothing -> (handleButtons world (x, y))-- Or make no change and check buttons for clicking
                                     Nothing  ->  handleButtons world (x, y) -- Otherwise there is nothing there, so ignore it and check the buttons for clicking
        False -> ((handleButtons world (x, y)))
-  where nextTurn w b = return (w { board = b, turn = other (turn w) })
+  where nextTurn w b = return (w { board = b, turn = other (turn w), isUpdated = False })
         handleButtons w (x, y) = do world <- w
                                     return (checkButtons w (floor x, floor y) (buttons world))
 

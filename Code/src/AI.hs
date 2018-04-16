@@ -46,17 +46,6 @@ buildTree gen b c = let moves = gen b c in -- generated moves
                              -- successful, make move and build tree from
                              -- here for opposite player
 
--- Get the best next move from a (possibly infinite) game tree. This should
--- traverse the game tree up to a certain depth, and pick the move which
--- leads to the position with the best score for the player whose turn it
--- is at the top of the game tree.
---getBestMove ::  Int -- ^ Maximum search depth
---               -> GameTree -- ^ Initial game tree
---               -> Position
---getBestMove d tree = fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
---getBestMove maxD tree =trace(show (fst((next_moves tree)!! (getRandomIndex (length(next_moves tree)))))) fst((next_moves tree)!! (getRandomIndex (length(next_moves tree))))
---displayPoss []=[]
---displayPoss (x:xs)=[fst x]++displayPoss xs
 
 -- Get the best next move from a (possibly infinite) game tree. This should
 -- traverse the game tree up to a certain depth, and pick the move which
@@ -106,11 +95,13 @@ gen board col = trace("gen") getEmptyPos (pieces board) (size board)
 -- generating a tree from this list (buildTree), finding the best move in this GameTree
 -- using getBestMove (currently just a random move) and making the move at this positions
 -- using makeMoves
-updateBoard :: Board -> Col -> String -> Maybe Board
-updateBoard board colour ai = let positions = (gen board colour) in
+updateBoard :: World -> Col -> String -> Maybe World
+updateBoard w colour ai = let positions = (gen (board w) colour) in
                                   case ai of
-                                  "beginner" -> makeMove board colour ((positions)!!(getRandomIndex (length(positions))))
-                                  "intermediate" -> makeMove board colour (getBestMove 1 (buildTree gen board colour))
+                                  "beginner" -> Just (w {board = fromJust (makeMove (board w) colour ((positions)!!(getRandomIndex (length(positions))))), isUpdated = True, turn = other (turn w)})
+                                  "intermediate" -> if not (isUpdated w)
+                                                       then Just (w {board = fromJust (makeMove (board w) colour (getBestMove 1 (buildTree gen (board w) colour))), isUpdated = True, turn = other (turn w)})
+                                                    else Just w
 
 
 -- Update the world state after some time has passed
@@ -120,8 +111,8 @@ updateWorld :: Float -- ^ time since last update (you can ignore this)
 updateWorld t world = do wo <- trace("updating world") world
                          let bestMove = (getBestMove 1 (buildTree gen (board wo) (player wo)))
                          let w = (wo { board = (board wo) { hint = bestMove } })
-                         if ((turn w) /= (player w) && checkWon (board w) == Nothing && (((ai w)) /= ("pvp"))) --if not the player's turn
-                            then return $ trace("turn " ++ show(turn w) ++ " ended") return w { board = fromJust(updateBoard (board w) (turn w) (ai w)), turn = other (turn w) }
+                         if (((turn w) /= (player w)) && ((checkWon (board w)) == Nothing) && (((ai w)) /= ("pvp"))) --if not the player's turn
+                            then return $ trace("turn " ++ show(turn w) ++ " ended") return (fromJust(updateBoard w (turn w) (ai w)))
                          else trace("got here") (return world)
 
 
