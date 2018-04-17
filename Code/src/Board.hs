@@ -133,7 +133,7 @@ aiBeginnerButton = Button { topLeft = (-80, 10), bottomRight = (70, -20), value 
 aiIntermediateButton :: Button
 aiIntermediateButton = Button { topLeft = (80, 10), bottomRight = (230, -20), value = "Intermediate AI", action = (setAI "intermediate") }
 aiPVPButton :: Button
-aiPVPButton = Button { topLeft = (240, 10), bottomRight = (390, -20), value = "PVP AI", action = (setAI "pvp") }
+aiPVPButton = Button { topLeft = (240, 10), bottomRight = (390, -20), value = "PVP", action = (setAI "pvp") }
 
 normalGameButton :: Button
 normalGameButton = Button { topLeft = (-80, -30), bottomRight = (70, -60), value = "Start Normal Game", action = (initNormal 0) }
