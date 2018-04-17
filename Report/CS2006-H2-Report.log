@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2018.4.5)  15 APR 2018 17:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2018.4.5)  17 APR 2018 13:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**CS2006-P1-Report.tex
-(./CS2006-P1-Report.tex
+**CS2006-H2-Report.tex
+(./CS2006-H2-Report.tex
 LaTeX2e <2016/03/31>
 Babel <3.9r> and hyphenation patterns for 80 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -59,8 +59,8 @@ Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 LaTeX Warning: Unused global option(s):
     [11].
 
-(./CS2006-P1-Report.aux)
-\openout1 = `CS2006-P1-Report.aux'.
+No file CS2006-H2-Report.aux.
+\openout1 = `CS2006-H2-Report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
@@ -74,7 +74,6 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
-
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count88
@@ -151,16 +150,11 @@ Overfull \hbox (30.07819pt too wide) in paragraph at lines 11--11
 [1
 
 {/usr/share/texlive/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(./CS2006-P1-Report.toc
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 2.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 2.
-)
+No file CS2006-H2-Report.toc.
 \tf@toc=\write3
-\openout3 = `CS2006-P1-Report.toc'.
+\openout3 = `CS2006-H2-Report.toc'.
 
- [2]
+[2]
 Underfull \hbox (badness 10000) in paragraph at lines 17--19
 
  []
@@ -176,7 +170,12 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 32.
- [3] [4]
+ [3]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 72.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 72.
+ [4]
 <images/Test1.png, id=25, 537.00626pt x 909.3975pt>
 File: images/Test1.png Graphic file (type png)
  <use images/Test1.png>
@@ -193,54 +192,29 @@ Underfull \hbox (badness 10000) in paragraph at lines 75--77
 
  []
 
-[5 <./images/Test1.png>]
-
-! LaTeX Error: Something's wrong--perhaps a missing \item.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.89 					\end{itemize}
-                       
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: Something's wrong--perhaps a missing \item.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.94 					\end{itemize}
-                       
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[6 <./images/Test2.png>] [7] (./CS2006-P1-Report.aux) ) 
+[5 <./images/Test1.png>] [6 <./images/Test2.png>] [7] (./CS2006-H2-Report.aux) 
+) 
 Here is how much of TeX's memory you used:
- 1521 strings out of 493039
- 21864 string characters out of 6136944
+ 1517 strings out of 493039
+ 21780 string characters out of 6136944
  81643 words of memory out of 5000000
  5065 multiletter control sequences out of 15000+600000
  7895 words of font info for 28 fonts, out of 8000000 for 9000
  1137 hyphenation exceptions out of 8191
- 38i,8n,23p,537b,231s stack positions out of 5000i,500n,10000p,200000b,80000s
- </usr/share/texlive/tex
-mf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr8.pk> </usr/share/texlive/texmf-dis
-t/fonts/pk/ljfour/public/cm/dpi600/cmr6.pk> </usr/share/texlive/texmf-dist/font
-s/pk/ljfour/public/cm/dpi600/cmr7.pk> </usr/share/texlive/texmf-dist/fonts/pk/l
-jfour/public/cm/dpi600/cmsy10.pk> </cs/home/locw/.cache/texlive/texmf-var/fonts
-/pk/ljfour/public/cm/cmbx12.600pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfo
-ur/public/cm/dpi600/cmbx10.pk> </cs/home/locw/.cache/texlive/texmf-var/fonts/pk
-/ljfour/public/cm/cmbx12.720pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/
-public/cm/dpi600/cmr10.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/publi
-c/cm/dpi600/cmr12.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/
-dpi600/cmr17.pk>
-Output written on CS2006-P1-Report.pdf (7 pages, 172815 bytes).
+ 38i,8n,23p,537b,225s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr8.pk> </us
+r/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr6.pk> </usr/shar
+e/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr7.pk> </usr/share/texl
+ive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmsy10.pk> </usr/share/texlive/
+texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmbx10.pk> </cs/home/locw/.cache/te
+xlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx12.600pk> </cs/home/locw/.cache/t
+exlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx12.720pk> </usr/share/texlive/te
+xmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr10.pk> </usr/share/texlive/texmf-d
+ist/fonts/pk/ljfour/public/cm/dpi600/cmr12.pk> </usr/share/texlive/texmf-dist/f
+onts/pk/ljfour/public/cm/dpi600/cmr17.pk>
+Output written on CS2006-H2-Report.pdf (7 pages, 169147 bytes).
 PDF statistics:
- 334 PDF objects out of 1000 (max. 8388607)
+ 323 PDF objects out of 1000 (max. 8388607)
  59 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
