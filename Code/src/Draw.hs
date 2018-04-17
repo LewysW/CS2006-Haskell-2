@@ -20,11 +20,8 @@ drawLoading world = do w <- world
 
 drawWorld :: IO World -> IO Picture
 drawWorld world = do w <- world
-                     game_images <- sequence $ loadBMP "./Assets/hint_piece.bmp" : loadBMP "./Assets/black_piece.bmp" : loadBMP "./Assets/white_piece.bmp" : []
-                     button_images <- sequence $ loadBMP "./Assets/undo_button.bmp" : loadBMP "./Assets/save_button.bmp" : loadBMP "./Assets/load_button.bmp" : loadBMP "./Assets/hint_button.bmp" : []
-                     winscreen_images <- sequence $ loadBMP "./Assets/black_win.bmp" : loadBMP "./Assets/white_win.bmp" : []
                      if (running w)
-                        then return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [] game_images)) : (Pictures (drawButtons (buttons w) [] button_images)) : (checkEnd w winscreen_images))
+                        then return $ Pictures ( Translate (half w) (half w) (Pictures (drawBoard (board w) (0, 0) [] (game_images w))) : (Pictures (drawButtons (buttons w) [] (button_images w)) : (checkEnd w (winscreen_images w))))
                      else (drawLoading world)
 
 

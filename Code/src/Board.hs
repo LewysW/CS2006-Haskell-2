@@ -10,6 +10,7 @@ import qualified Data.Text.Read as TextRead
 import Data.List.Split
 import Data.Maybe
 import System.IO.Unsafe
+import Graphics.Gloss
 
 
 spacing = 50
@@ -70,13 +71,16 @@ data World = World { board :: Board,
                      game_type :: String,
                      buttons :: [Button],
                      running :: Bool,
-                     ai:: String }
+                     ai:: String,
+                     game_images :: [Picture],
+                     button_images :: [Picture],
+                     winscreen_images :: [Picture]}
 
 
-initWorld :: Int -> Int -> Bool -> [(Position, Col)] -> Col -> Col -> String -> Bool -> String -> IO World
-initWorld size target isUpdated history turn player game_type running ai = if running -- set default hint position as the middle piece TODO
-                                                                              then return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn isUpdated player game_type (gameButtons size) running ai
-                                                                              else return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn isUpdated player game_type (loadingButtons size) running ai
+initWorld :: Int -> Int -> Bool -> [(Position, Col)] -> Col -> Col -> String -> Bool -> String -> [Picture] -> [Picture] -> [Picture] -> IO World
+initWorld size target isUpdated history turn player game_type running ai gImages bImages wImages = if running -- set default hint position as the middle piece TODO
+                                                                                                    then return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn isUpdated player game_type (gameButtons size) running ai gImages bImages wImages
+                                                                                                   else return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn isUpdated player game_type (loadingButtons size) running ai gImages bImages wImages
   where calcPos size = (size `div` 2)
 
 -- List of all buttons that the game uses.
@@ -158,11 +162,11 @@ setAI level w = do world <- w
 
 initNormal :: Int -> IO World -> IO World
 initNormal _ w = do world <- w
-                    (initWorld (size (board world)) (target (board world)) (isUpdated world) [] Black (player world) ("normal") True (ai world))
+                    (initWorld (size (board world)) (target (board world)) (isUpdated world) [] Black (player world) ("normal") True (ai world) (game_images world) (button_images world) (winscreen_images world))
 
 initFourAndFour :: Int -> IO World -> IO World
 initFourAndFour _ w = do world <- w
-                         (initWorld (size (board world)) (target (board world)) (isUpdated world) [] Black (player world) ("4x4") True (ai world))
+                         (initWorld (size (board world)) (target (board world)) (isUpdated world) [] Black (player world) ("4x4") True (ai world) (game_images world) (button_images world) (winscreen_images world))
 -- A Button that rolls back one turn for the current player
 undoButton :: Button
 undoButton = Button { topLeft = (-150, 0), bottomRight = (-70, -30), value = "Undo Move", action = (undo 0) }
@@ -196,7 +200,7 @@ loadButton = Button { topLeft = (-150, -80), bottomRight = (-70, -110), value = 
 -- |Load the current game state from a file
 load :: IO World -> IO World
 load w = do world <- w
-            initWorld new_size new_target False new_ps (turn world) (player world) new_game_type True (ai world)
+            initWorld new_size new_target False new_ps (turn world) (player world) new_game_type True (ai world) (game_images world) (button_images world) (winscreen_images world)
          where f = readFile "save.dat" -- Read in the raw save file data
                ls = splitOn "\n" (unsafePerformIO f) -- Split the save file into lines
                top = splitOn " " (head ls) -- Grab each word from the top line of the save file
