@@ -333,6 +333,7 @@ maxLength :: Board -> Col -> Int
 maxLength board col = let maximumLength = maximum (map maximum (map (getLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]))
                       in
                         if maximumLength == (target board) then 5000
+                        else if maximumLength == ((target board) - 1) then 2000
                         else maximumLength
 
 
