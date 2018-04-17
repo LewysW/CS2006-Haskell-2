@@ -324,32 +324,18 @@ getScore board col = if ((target board) == 3)
                              - (4 * realToFrac(getNumClosed board col)))
                         else
                              (realToFrac(getNumConsecutive board col)
-                             + 15 * (getAverageLength board col)
-                             + (realToFrac(isWinningMove board col))
-                             - (4 * realToFrac(getNumClosed board col)))
-
-
-
-
---Checks for a potential win move and returns an overwhelming score
-isWinningMove :: Board -> Col -> Int
-isWinningMove board col = if (maxLength board col) >= ((target board)) && (potentialWin board col) then 20000
-                          else if ((maxLength board col) == ((target board) - 1)) then 10000
-                          else 0
-
---Checks whether future moves can increase the size of the player's set to beyond the target, meaning the current move must be a win
-potentialWin :: Board -> Col -> Bool
-potentialWin board col = let newBoards = potentialBoards board col in
-                          if (maximum(map (\b -> maxLength b col) newBoards)) > (target board) then True
-                          else False
-
---Generates all potential board layouts for future moves
-potentialBoards :: Board -> Col -> [Board]
-potentialBoards board col = trace("potential boards") (catMaybes (map (makeMove board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]))
+                             + 16 * (getAverageLength board col)
+                             + (realToFrac(maxLength board col))
+                             - (5 * realToFrac(getNumClosed board col)))
 
 -- Returns maximum length of set on board
 maxLength :: Board -> Col -> Int
-maxLength board col = maximum (map maximum (map (getLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]))
+maxLength board col = let maximumLength = maximum (map maximum (map (getLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)]))
+                      in
+                        if maximumLength == (target board) then 5000
+                        else maximumLength
+
+
 
 --Gets number of consecutive sets on the board
 getNumConsecutive :: Board -> Col -> Int
