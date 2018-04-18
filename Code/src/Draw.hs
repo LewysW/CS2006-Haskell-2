@@ -10,18 +10,13 @@ import Debug.Trace
 half :: World -> Float
 half w = (fromIntegral (- (( size (board w) - 1) * spacing)) / 2)
 
--- Given a world state, return a Picture which will render the world state.
--- Currently just draws a single blue circle as a placeholder.
---
--- This will need to extract the Board from the world state and draw it
--- as a grid plus pieces.
-
 -- This function draws the loading page, which has a number of option buttons
 -- @IO World to display the board grid. @IO Picture to display the option page on the screen
 drawLoading :: IO World -> IO Picture
 drawLoading world = do w <- world
                        return $ Pictures ( (Pictures (drawButtonsForLoading w (150, 30) (buttons w))) : [welcomeToGomoku w] )
 
+-- Given a world state, return a Picture which will render the world state.
 -- This check whether the game is running or not. If so, this function will print out the game board. Otherwise, it will call the drawLoading function to print out the loading page.
 -- @IO World to get information about the buttons on the board. @IO Picture to draw the board on the screen.
 drawWorld :: IO World -> IO Picture
@@ -83,7 +78,7 @@ drawImage (x, y) bmp = Translate (fromIntegral (x * spacing)) (fromIntegral (y *
 --The scale of the text
 scaler = 0.4
 
--- Prints out the winner.
+-- Prints out the winner message by using the corresponding bmp image.
 -- @Col the colour of the winner. @[Picture] list of bmp images. @Picture corresponding winner bmp image.
 printOutWinner :: Col -> [Picture] -> Picture
 printOutWinner Black bmps = drawImage (0, 0) (bmps!!0)
@@ -95,6 +90,8 @@ welcomeToGomoku :: World -> Picture
 welcomeToGomoku w = color white $ Translate (-300) (-150) (scale scaler scaler (text "Welcome To Gomoku!"))
 
 -- Draws all buttons that the option page requires.
+-- To draw the buttons on the board, this function checks the every vertex of the button.
+-- Then, it draws the buttons on the corresponding positions.
 -- Used the map function to do same process to all elements in the list.
 -- @World to draw buttons on the board. @(Float, Float) the vertex of the game grid. @[Button] list of all buttons. @[Picture] list of all button images.
 drawButtonsForLoading :: World -> (Float, Float) -> [Button] -> [Picture]
@@ -110,6 +107,7 @@ drawButtonsForLoading w size = map drawB
                   ))
 
 -- This function draws the button on the board.
+-- This function checks the every vertex of button, and draw the button on the corresponding position.
 -- It calls itself recursively to draw all buttons on the board.
 -- @[Button] the list of buttons which should be on the board. @[Picture] the list of button images. @[Picture] the list of all generated images. @[Picture] the list of bmp images.
 drawButtons :: [Button] -> [Picture] -> [Picture] -> [Picture]
