@@ -59,8 +59,7 @@
 		\end{itemize}
 		
 	\section{Evidence of Testing}	
-		
-		
+		The testing of the game was carried out iteratively as features were developed to ensure that they worked and complied with the rest of the system. Examples of testing of the main features of the program (that are visually demonstrable) have had screen-shots taken which are included in the \textbf{appendix} section at the end of the report. The screen-shots show the settings menu, the command line being used to set the game options, an example game between the player and the random AI, an example game between the player and the heuristic AI, an example player versus player game, an example of the game state being saved, and finally an example of the four and four condition being met.
 	\section{Known Problems}
 		\begin{itemize}
 			\item \textbf{Solving Gomoku} - At the moment the heuristic based AI is able to beat the user all of the time on a game of three in a row if they go first (as far as testing has shown). However for games with a target higher than three in a row the AI performs well but could be improved to the point where the player can no longer win. The Dutch Computer Scientist Victor Allis has shown in his dissertation\footnote{http://fragrieu.free.fr/SearchingForSolutions.pdf} AI solutions for various games including Connect Four, Qubic, and relevant to this practical, Gomoku. To improve the AI a search tree could be implemented which uses the techniques discussed in this literature.
@@ -113,5 +112,96 @@
   		http://fragrieu.free.fr/SearchingForSolutions.pdf, 
   		(1994).
   	\end{thebibliography}
+  	\newpage
+\section{Appendix}
+	\begin{figure}[h]
+					\caption{Options/Settings Screen if no command line arguments are given:}				\centering
+					\includegraphics[scale=0.5]{SettingsScreen.png}
+		\end{figure}
+
+\begin{flushleft}
+	Example of options being set via the command line:
+\includegraphics[scale=0.6]{CommandLineArguments.png}
+\end{flushleft}
+
+\newpage
+
+\begin{figure}[h]
+					\caption{Player vs Random: AI is black and plays first:}				\centering
+					\includegraphics[scale=0.5]{Random1.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Random:}				\centering
+					\includegraphics[scale=0.5]{Random2.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Random:}				\centering
+					\includegraphics[scale=0.5]{Random3.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Random - white (player) gets three in a row and wins:}				\centering
+					\includegraphics[scale=0.5]{Random4.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Heuristic: AI is black and plays first:}				\centering
+					\includegraphics[scale=0.5]{Heuristic1.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Heuristic (hints toggled on by player, displayed as red/pink piece):}				\centering
+					\includegraphics[scale=0.5]{Heuristic2.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Heuristic:}				\centering
+					\includegraphics[scale=0.5]{Heuristic3.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Heuristic - white (player) gets three in a row and wins (black AI on three in a row always beats player):}				\centering
+					\includegraphics[scale=0.5]{Heuristic4.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Player (example of 10x10 board):}				\centering
+					\includegraphics[scale=0.5]{pvp1.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Player (black just about to win):}				\centering
+					\includegraphics[scale=0.5]{pvp2.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Player vs Player (Black wins by getting five in a row):}				\centering
+					\includegraphics[scale=0.5]{pvp3.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Example of Save Game- Game state to be saved:}				\centering
+					\includegraphics[scale=0.5]{save1.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Example of Save Game- Save game file:}				\centering
+					\includegraphics[scale=0.5]{save2.png}
+\end{figure}
+
+\begin{figure}[h]
+					\caption{Four and Four Condition (black can't get a horizontal four in a row):}				\centering
+					\includegraphics[scale=0.5]{FourAndFour.png}
+\end{figure}
+
+\newpage
+
+		
+
+
+		
+	
 
 \end{document}

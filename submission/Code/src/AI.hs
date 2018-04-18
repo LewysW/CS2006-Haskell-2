@@ -47,12 +47,13 @@ buildTree gen b c = let moves = gen b c in -- generated moves
                              -- here for opposite player
 
 
--- Get the best next move from a (possibly infinite) game tree. This should
--- traverse the game tree up to a certain depth, and pick the move which
--- leads to the position with the best score for the player whose turn it
--- is at the top of the game tree.
-getBestMove ::  Int -- ^ Maximum search depth
-               -> GameTree -- ^ Initial game tree
+-- Gets the best move for the AI by returning the position with the maximum score
+-- determined by the evaluate function. If the middle is empty at the beginning of the
+-- game then the AI will always place there.
+-- @Int - search depth for tree, @tree - game tree containing board moves.
+-- @Position - position for AI to use.
+getBestMove ::  Int
+               -> GameTree
                -> Position
 getBestMove d tree = let middle = getMiddleOfBoard (size (game_board tree)) in
                      if (getPiece (pieces (game_board tree)) middle) == Nothing then middle
@@ -60,32 +61,58 @@ getBestMove d tree = let middle = getMiddleOfBoard (size (game_board tree)) in
                          then addT middle (-1, -1)
                      else fst (fromJust (maxTurn (next_moves tree) (game_turn tree)))
 
+--Works out the middle coordinate of the board.
+-- @Int - size of board, @Position - position of middle piece.
 getMiddleOfBoard :: Int -> Position
 getMiddleOfBoard size = (size `div` 2, size `div` 2)
 
+--Returns the position and associated game tree with the max score determined by the
+-- evaluate function. Returns nothing if given an empty list.
+-- @[(Position, GameTree)] - list of current board positions and trees, @Col - colour to
+-- find best move for, @Maybe (Position, GameTree) - best position to place a piece and
+-- associated game tree if there is a best postion.
 maxTurn :: [(Position, GameTree)] -> Col -> Maybe (Position, GameTree)
 maxTurn [] _ = Nothing
 maxTurn nextMoves col = Just (snd(head(sortByScore (evaluateNextMoves nextMoves col))))
 
+--Sorts the list of evaluated positions by score and returns the list.
+-- @[(Float, (Position, GameTree))] - list of scores and associated positions/game trees.
+-- @@[(Float, (Position, GameTree))] - sorted list of positions/game trees by score
 sortByScore :: [(Float, (Position, GameTree))] -> [(Float, (Position, GameTree))]
 sortByScore = sortBy (flip compare `on` fst)
 
+--Evaluates all moves to return a list of moves and associated scores based on
+-- how good the board is for a given player.
+-- @[(Position, GameTree)] - list of positions to move to and associated game trees,
+-- @Col - colour to use in board evaluation.
+-- @[(Float, (Position, GameTree))] - float score and related position/gametree
 evaluateNextMoves :: [(Position, GameTree)] -> Col -> [(Float, (Position, GameTree))]
 evaluateNextMoves nextMoves col = map (\ nextMove -> (evaluate (game_board (snd nextMove)) col, nextMove)) nextMoves
 
+--Used for random AI.
+--Uses CPU time to get a pseudo random number and this number is divided by the length
+-- of the list of moves on the board to get a remainder representing a
+-- random board position index.
+-- @Int - length of list of available board moves.
+-- @Int - Pseudo-random index used to get a random move.
 getRandomIndex :: Int -- List length
                 -> Int -- Pseudo-random index
 getRandomIndex len = fromIntegral((unsafePerformIO getCPUTime) `mod` toInteger(len))
 
---Gets list of empty positions (with no piece) on board for potential moves
+--Gets list of empty positions (with no piece) on board for potential moves. Does
+-- this by filtering out the coordinates (using \\ operator) that match coordinates
+-- in the list of pieces on the board.
+-- @[(Position, Col)] - pieces on the board, @Int - size of board,
+-- @[Position] - empty positions on board.
 getEmptyPos :: [(Position, Col)] --Pieces on board
             -> Int --Size of board
             -> [Position] --Empty positions on board
 getEmptyPos [] size = range ((0, 0), (size - 1, size - 1))
 getEmptyPos pieces size = range ((0, 0), (size - 1, size - 1)) \\ (map fst pieces)
 
---Generates list of possible positions to be used to construct GameTree
---Finds all legal moves for now TODO reduce size of moves to avoid combinatorial explosion
+--Generates list of available game positions by getting all of the empty positoins on the board.
+-- @Board - board to check for available positions, @Col - colour of player.
+-- @[Position] - available positions.
 gen :: Board -> Col -> [Position]
 gen board col = trace("gen") getEmptyPos (pieces board) (size board)
 
@@ -93,9 +120,11 @@ gen board col = trace("gen") getEmptyPos (pieces board) (size board)
 -- Function to update board by playing AI move (current search depth of 1 by default)
 -- Makes a move using the board, colour and position.
 -- Position is determined by building a list of empty moves (gen),
--- generating a tree from this list (buildTree), finding the best move in this GameTree
--- using getBestMove (currently just a random move) and making the move at this positions
+-- finding the score of each of the moves in this list,
+-- using getBestMove and making the move at this position
 -- using makeMoves
+-- @World - world containing board to update. @Col - colour to use to make move
+-- @String - string representing the AI mode. @Maybe World - updated world.
 updateBoard :: World -> Col -> String -> Maybe World
 updateBoard w colour ai = let positions = (gen (board w) colour) in
                                   case ai of
@@ -106,25 +135,19 @@ updateBoard w colour ai = let positions = (gen (board w) colour) in
 
 
 -- Update the world state after some time has passed
+--Returns the current world if it's the player's turn, otherwise updates the world
+-- using the functions to select and play an AI move.
+-- @Float - time since last update, @IO World - current world state,
+-- @IO (IO World) - updated world.
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> IO World -- ^ current world state
             -> IO (IO World)
-updateWorld t world = do wo <- trace("updating world") world
+updateWorld t world = do wo <- world
                          let bestMove = (getBestMove 1 (buildTree gen (board wo) (player wo)))
-                         let w = (wo { board = (board wo) { hint = bestMove } })
-                         if (((turn w) /= (player w)) && ((checkWon (board w)) == Nothing) && (((ai w)) /= ("pvp"))) --if not the player's turn
-                            then return $ trace("turn " ++ show(turn w) ++ " ended") return (trace("testing") (fromJust(updateBoard w (turn w) (ai w))))
-                         else trace("got here") (return world)
 
-
-
-{- Hint: 'updateWorld' is where the AI gets called. If the world state
- indicates that it is a computer player's turn, updateWorld should use
- 'getBestMove' to find where the computer player should play, and update
- the board in the world state with that move.
- At first, it is reasonable for this to be a random move!
- If both players are human players, the simple version above will suffice,
- since it does nothing.
- In a complete implementation, 'updateWorld' should also check if either
- player has won and display a message if so.
--}
+                         if (((turn wo) /= (player wo)) && ((checkWon (board wo)) == Nothing) && (((ai wo)) /= ("pvp"))) --if not the player's turn
+                           then case (updateBoard wo (turn wo) (ai wo)) of
+                             Just w -> return $ trace("turn " ++ show(turn wo) ++ " ended") return w
+                             Nothing ->return $ trace("turn " ++ show(turn wo) ++ " ended") return (trace("testing") wo)
+                         else
+                           return $ return wo { board = (board wo) { hint = bestMove } }

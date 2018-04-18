@@ -1,3 +1,13 @@
+Cabal Instructions:
+1. If when running the program any dependencies are not installed, run:
+	cabal install 
+
+2. If the graphics package gloss is not installed, run:
+	cabal install gloss
+
+3. If cabal is not properly configured, run:
+	cabal configure
+
 Execution Instructions:
 
 1. Open a terminal window.
@@ -24,6 +34,8 @@ Execution Instructions:
 	- Save Game, saves the current game state in the save.dat file located in the Code/ folder.
 	- Load Game, loads the current game state from the save.dat file and allows the player to continue from that state.
 	- Toggle Hints, displays a red/pink piece on the board which is a suggestion for where the player should play their next piece (results may vary).
+
+8. Once the game has ended ((n)either player has won) then the program must be re-run to play again.
 
 Version Notes:
 See the Gomoku.cabal file in the Code/ directory.

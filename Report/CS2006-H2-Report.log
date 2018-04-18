@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2018.4.5)  18 APR 2018 18:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2018.4.5)  18 APR 2018 20:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -178,40 +178,249 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 32.
  [4] [5] [6]
-Underfull \hbox (badness 10000) in paragraph at lines 106--107
+Underfull \hbox (badness 10000) in paragraph at lines 105--106
 
  []
 
 
-Underfull \hbox (badness 5105) in paragraph at lines 110--115
+Underfull \hbox (badness 5105) in paragraph at lines 109--114
 \OT1/cmr/m/n/10 Maas-tricht Uni-ver-sity, http://fragrieu.free.fr/SearchingForS
 olutions.pdf,
  []
 
-[7] (./CS2006-H2-Report.aux) ) 
+[7] <images/SettingsScreen.png, id=36, 843.15pt x 739.76375pt>
+File: images/SettingsScreen.png Graphic file (type png)
+
+<use images/SettingsScreen.png>
+Package pdftex.def Info: images/SettingsScreen.png used on input line 119.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 119--120
+ [][] 
+ []
+
+<images/CommandLineArguments.png, id=38, 610.28pt x 21.07875pt>
+File: images/CommandLineArguments.png Graphic file (type png)
+
+<use images/CommandLineArguments.png>
+Package pdftex.def Info: images/CommandLineArguments.png used on input line 124
+.
+(pdftex.def)             Requested size: 366.17082pt x 12.64732pt.
+
+Overfull \hbox (21.17082pt too wide) in paragraph at lines 123--125
+[]  
+ []
+
+[8 <./images/SettingsScreen.png> <./images/CommandLineArguments.png>]
+<images/Random1.png, id=44, 843.15pt x 739.76375pt>
+File: images/Random1.png Graphic file (type png)
+ <use images/Random1.png>
+Package pdftex.def Info: images/Random1.png used on input line 131.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 131--132
+ [][] 
+ []
+
+<images/Random2.png, id=45, 843.15pt x 739.76375pt>
+File: images/Random2.png Graphic file (type png)
+ <use images/Random2.png>
+Package pdftex.def Info: images/Random2.png used on input line 136.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 136--137
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/Random3.png, id=46, 843.15pt x 739.76375pt>
+File: images/Random3.png Graphic file (type png)
+ <use images/Random3.png>
+Package pdftex.def Info: images/Random3.png used on input line 141.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 141--142
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/Random4.png, id=47, 843.15pt x 739.76375pt>
+File: images/Random4.png Graphic file (type png)
+ <use images/Random4.png>
+Package pdftex.def Info: images/Random4.png used on input line 146.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 146--147
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/Heuristic1.png, id=48, 843.15pt x 739.76375pt>
+File: images/Heuristic1.png Graphic file (type png)
+
+<use images/Heuristic1.png>
+Package pdftex.def Info: images/Heuristic1.png used on input line 151.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 151--152
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/Heuristic2.png, id=49, 843.15pt x 739.76375pt>
+File: images/Heuristic2.png Graphic file (type png)
+
+<use images/Heuristic2.png>
+Package pdftex.def Info: images/Heuristic2.png used on input line 156.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 156--157
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/Heuristic3.png, id=50, 843.15pt x 739.76375pt>
+File: images/Heuristic3.png Graphic file (type png)
+
+<use images/Heuristic3.png>
+Package pdftex.def Info: images/Heuristic3.png used on input line 161.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 161--162
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/Heuristic4.png, id=51, 843.15pt x 739.76375pt>
+File: images/Heuristic4.png Graphic file (type png)
+
+<use images/Heuristic4.png>
+Package pdftex.def Info: images/Heuristic4.png used on input line 166.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 166--167
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/pvp1.png, id=52, 843.15pt x 739.76375pt>
+File: images/pvp1.png Graphic file (type png)
+ <use images/pvp1.png>
+Package pdftex.def Info: images/pvp1.png used on input line 171.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 171--172
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/pvp2.png, id=53, 843.15pt x 739.76375pt>
+File: images/pvp2.png Graphic file (type png)
+ <use images/pvp2.png>
+Package pdftex.def Info: images/pvp2.png used on input line 176.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 176--177
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/pvp3.png, id=54, 843.15pt x 739.76375pt>
+File: images/pvp3.png Graphic file (type png)
+ <use images/pvp3.png>
+Package pdftex.def Info: images/pvp3.png used on input line 181.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 181--182
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/save1.png, id=55, 843.15pt x 739.76375pt>
+File: images/save1.png Graphic file (type png)
+ <use images/save1.png>
+Package pdftex.def Info: images/save1.png used on input line 186.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 186--187
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/save2.png, id=56, 208.78pt x 222.8325pt>
+File: images/save2.png Graphic file (type png)
+ <use images/save2.png>
+Package pdftex.def Info: images/save2.png used on input line 191.
+(pdftex.def)             Requested size: 104.38972pt x 111.41597pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/FourAndFour.png, id=57, 843.15pt x 739.76375pt>
+File: images/FourAndFour.png Graphic file (type png)
+
+<use images/FourAndFour.png>
+Package pdftex.def Info: images/FourAndFour.png used on input line 196.
+(pdftex.def)             Requested size: 421.57396pt x 369.88097pt.
+
+Overfull \hbox (76.57396pt too wide) in paragraph at lines 196--197
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[9 <./images/Random1.png>] [10 <./images/Random2.png>] [11 <./images/Random3.pn
+g>] [12 <./images/Random4.png>] [13 <./images/Heuristic1.png>] [14 <./images/He
+uristic2.png>] [15 <./images/Heuristic3.png>] [16 <./images/Heuristic4.png>]
+[17 <./images/pvp1.png>] [18 <./images/pvp2.png>] [19 <./images/pvp3.png>]
+[20 <./images/save1.png> <./images/save2.png>] [21 <./images/FourAndFour.png>]
+(./CS2006-H2-Report.aux) ) 
 Here is how much of TeX's memory you used:
- 1511 strings out of 493039
- 21678 string characters out of 6136944
+ 1594 strings out of 493039
+ 23442 string characters out of 6136944
  82646 words of memory out of 5000000
- 5058 multiletter control sequences out of 15000+600000
+ 5123 multiletter control sequences out of 15000+600000
  8241 words of font info for 29 fonts, out of 8000000 for 9000
  1137 hyphenation exceptions out of 8191
- 38i,8n,23p,878b,235s stack positions out of 5000i,500n,10000p,200000b,80000s
- </usr/share/texlive/texmf-dist/fonts/pk/ljfour/p
-ublic/cm/dpi600/cmti10.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/publi
-c/cm/dpi600/cmr8.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/d
-pi600/cmr6.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/
-cmr7.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmsy10
-.pk> </cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx12.6
-00pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmbx10.pk
-> </cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx12.720p
-k> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr10.pk> </
-usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr12.pk> </usr/s
-hare/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr17.pk>
-Output written on CS2006-H2-Report.pdf (7 pages, 95898 bytes).
+ 38i,8n,23p,878b,228s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </usr/share/texlive/texmf-dist/fonts/pk/ljfour/publi
+c/cm/dpi600/cmti10.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm
+/dpi600/cmr8.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi60
+0/cmr6.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr7
+.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmsy10.pk>
+ </cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx12.600pk
+> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmbx10.pk> </
+cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx12.720pk> <
+/usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr10.pk> </usr/
+share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr12.pk> </usr/share
+/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr17.pk>
+Output written on CS2006-H2-Report.pdf (21 pages, 460132 bytes).
 PDF statistics:
- 353 PDF objects out of 1000 (max. 8388607)
- 62 compressed objects within 1 object stream
+ 437 PDF objects out of 1000 (max. 8388607)
+ 93 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 81 words of extra memory for PDF output out of 10000 (max. 10000000)
 
