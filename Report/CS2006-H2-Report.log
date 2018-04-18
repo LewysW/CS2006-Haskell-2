@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2018.4.5)  18 APR 2018 11:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2018.4.5)  18 APR 2018 15:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -170,34 +170,37 @@ Underfull \hbox (badness 10000) in paragraph at lines 17--19
 
  []
 
+[3]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 32.
-(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+ (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 32.
- [3] [4] [5]
-(./CS2006-H2-Report.aux) ) 
+ [4] [5] [6]
+[7] (./CS2006-H2-Report.aux) ) 
 Here is how much of TeX's memory you used:
  1508 strings out of 493039
  21651 string characters out of 6136944
- 81643 words of memory out of 5000000
+ 82643 words of memory out of 5000000
  5056 multiletter control sequences out of 15000+600000
  7895 words of font info for 28 fonts, out of 8000000 for 9000
  1137 hyphenation exceptions out of 8191
- 38i,6n,23p,540b,231s stack positions out of 5000i,500n,10000p,200000b,80000s
- </usr/share/texlive/texmf-dist/fonts/pk/ljfour/publi
-c/cm/dpi600/cmsy10.pk> </cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/
-public/cm/cmbx12.600pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/c
-m/dpi600/cmbx10.pk> </cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/pub
-lic/cm/cmbx12.720pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/d
-pi600/cmr10.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600
-/cmr12.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr1
-7.pk>
-Output written on CS2006-H2-Report.pdf (5 pages, 72677 bytes).
+ 38i,8n,23p,878b,233s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </usr/share/texlive/texmf-dist/fonts/pk/ljfour/p
+ublic/cm/dpi600/cmr8.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/
+cm/dpi600/cmr6.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi
+600/cmr7.pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cm
+sy10.pk> </cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx
+12.600pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmbx1
+0.pk> </cs/home/locw/.cache/texlive/texmf-var/fonts/pk/ljfour/public/cm/cmbx12.
+720pk> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr10.pk
+> </usr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr12.pk> </u
+sr/share/texlive/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr17.pk>
+Output written on CS2006-H2-Report.pdf (7 pages, 86939 bytes).
 PDF statistics:
- 272 PDF objects out of 1000 (max. 8388607)
- 40 compressed objects within 1 object stream
+ 322 PDF objects out of 1000 (max. 8388607)
+ 58 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

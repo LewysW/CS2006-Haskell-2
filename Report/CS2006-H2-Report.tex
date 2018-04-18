@@ -19,41 +19,43 @@
 	\subsection{Basic Specification:}
 		All requirements from the basic specification have been implemented. They are as follows:	
 		\begin{enumerate}
-			\item \textbf{Implement the game mechanics in Board.hs} -
-			\item \textbf{Implement the drawWorld function in Draw.hs to display the current board state graphically} -
-			\item \textbf{Implement appropriate event handlers for inputs events} -
-			\item \textbf{Implement a move generator (in AI.hs) and an evaluation function (in Board.hs) to provide a computer opponent} - two AIs have been implemented, a random AI and a heuristic based AI. The random AI generates a random index to refer to an element in a list of empty positions of the board and places a piece there. The heuristic AI uses the evaluation function in Board.hs to calculate its board score relative to its opponent for each possible move and chooses the highest scoring move.
+			\item \textbf{Implement the game mechanics in Board.hs} - For this requirement code in this file enables the board and world initialisation, and works out who has won by counting pieces to check for a win condition.
+			\item \textbf{Implement the drawWorld function in Draw.hs to display the current board state graphically} - The Draw.hs file uses Picture objects (included from the gloss graphics dependency) to display the assets required for the game (currently using a combination of bitmap images stored in the world and rendered images) which are refreshed ten times a second from playIO in the Main.hs file.
+			\item \textbf{Implement appropriate event handlers for inputs events} - The Input.hs file runs a handleInput function when the user clicks part of the display which decides which action to take depending on whether the area clicked is a button or part of the game board. Depending on the current game state, a different action will be take. For example if the game mode is player vs player, a different piece will be played depending on the current turn.
+			\item \textbf{Implement a move generator (in AI.hs) and an evaluation function (in Board.hs) to provide a computer opponent} - two AIs have been implemented, a random AI and a heuristic based AI. The random AI generates a random index to refer to an element in a list of empty positions of the board and places a piece there. The heuristic AI uses the evaluation function in Board.hs to calculate its board score relative to its opponent for each possible move and chooses the highest scoring move. The board score for the heuristic AI is determined by the number of continuous sets the AI has, the average length of these sets, the max length set on the current board, and the number of sets which have been blocked by the other player.
 		\end{enumerate}
 	
 	\subsection{Additional Requirements:}
 	 From the suggested additional requirements, all of the easy and medium requirements have been implemented, as have the listed hard requirements:
 	 	\subsubsection{Easy}
 			\begin{itemize}
-				\item \textbf{Easy Requirement 1} - 
-				\item \textbf{Easy Requirement 2} - 
-				\item \textbf{Easy Requirement 3} - 
+				\item \textbf{Easy Requirement 1} - The ability to enter command line arguments to set up the game options has been implemented by altering the initWorld function to take parameters relating to each setting. The parameters that can be set are:
+					\begin{itemize}
+						\item Board size.
+						\item Target (i.e. number in a row to win).
+						\item Player colour (White/Black).
+						\item Game type (normal or rule of four and four).
+						\item AI mode (beginner - random, intermediate - heuristic AI, pvp - player vs player).
+					\end{itemize}
+				\item \textbf{Easy Requirement 2} - When the undo button is clicked in-game, an undo event is triggered which calls a funtion in Board.hs to roll back the game by two moves (to the previous player move).
+				\item \textbf{Easy Requirement 3} - The rule variant four and four has been implemented in Board.hs. When the player tries to place a piece it simulates the board move and checks whether the checkFourAndFour function returns True. It calls functions which check each piece on the simulated board individually for the number of combinations of four in a row. Since every piece is checked individually, a row of four pieces would return the number four. If the total number is higher than four, it means that there are more than two open rows of four in a row if the move is made. It returns true and thus blocks all of these moves from happening. 
 			\end{itemize}
 
 		\subsubsection{Medium}
 			\begin{itemize}
-				\item \textbf{Medium Requirement 1} - 
-				\item \textbf{Medium Requirement 2} - 
-				\item \textbf{Medium Requirement 3} - 
-				\item \textbf{Medium Requirement 4} -
+				\item \textbf{Medium Requirement 1} - In addition to the ability to set options via the command line as described previously, game options can also be set in-game using a series of buttons. These buttons are declared in Board.hs and are stored in the the World state. As suggested by the specification, when the settings are not set in the command line, handleInput detects that the settings/loading screen should be displayed to allow the user to configure the game options. 
+				\item \textbf{Medium Requirement 2} - Bitmap images are loaded in during the execution of Main.hs from the Assets/ folder located within the Code/ directory. They are then stored in the the World state as lists of Picture objects and are then utilised from within the Draw.hs file when different aspects of the game are displayed.
+				\item \textbf{Medium Requirement 3} - A hint button has been implemented which can be toggled on or off by the user during the game. When toggled on a pink/red piece is displayed on a position on the board determined by the evaluate function in Board.hs (the same one used by the AI) which is deemed to be a favourable move for the player.
+				\item \textbf{Medium Requirement 4} - Save and load buttons have been created in Board.hs and stored in the World state which respectively trigger save and load events which result in the current board size, board target, game type, and board pieces to be written to, or read from, the save.dat file contained in the Code/ directory.
 			\end{itemize}
 		\subsubsection{Hard}
 				\begin{itemize}
-					\item \textbf{Hard Requirement 2} - 
+					\item \textbf{Hard Requirement 2} - As discussed previously, our implementation has two distinct AI opponents, one which selects moves based on a pseudo random index, and one which selects moves based on a heuristic which generates a score for each possible board state when a move is made. One of our game options as described in both the first easy and first medium requirements is the AI mode which allows the user to choose between each of these opponents.
 				\end{itemize}
 	\subsection{Further Features:}
 		The following additional features have also been implemented:
 		\begin{itemize}
-			\item PVP
-		\end{itemize}
-
-	\section{Design and Implementation}
-		\begin{itemize}
-				\item
+			\item \textbf{Player vs Player } - In addition to the basic and additional requirements, the ability to play a game against a human opponent has also been implemented and is selected in the same way as each of the AI opponents. When setting the command line option for the AI mode the keyword "pvp" can be used, or alternatively this can be selected using the pvp button in the user interface.
 		\end{itemize}
 		
 	\section{Evidence of Testing}	
@@ -61,40 +63,41 @@
 		
 	\section{Known Problems}
 		\begin{itemize}
-			\item TODO - speak about how hints and AI could be improved.
+			\item \textbf{Solving Gomoku} - At the moment the heuristic based AI is able to beat the user all of the time on a game of three in a row if they go first (as far as testing has shown). However for games with a target higher than three in a row the AI performs well but could be improved to the point where the player can no longer win. The Dutch Computer Scientist Victor Allis has shown in his dissertation\footnote{http://fragrieu.free.fr/SearchingForSolutions.pdf} AI solutions for various games including Connect Four, Qubic, and relevant to this practical, Gomoku. To improve the AI a search tree could be implemented which uses the techniques discussed in this literature.
+			\item \textbf{Improving Hints} - Further to the previous point, as the hint feature uses the evaluate function used by the AI, the hints are only as good as the AI. The hints would also therefore improve as improvements to the AI are made.
 		\end{itemize}
 		
 	\section{Problems Overcome}
 		\begin{itemize}
-			\item TODO - speak about CPU performance issues with infinite looping in handle input.
-			\item TODO - speak about memory issues when loading in BMP images.
+			\item \textbf{CPU Performance} - Initially our solution resulted in an incredibly high CPU utilisation which turned out to be as a result of an infinite loop being triggered each time a button (or area of the display) was clicked. The loop seemed to be triggered in order to handle incoming input from the user. In order to avoid these infinite loops we changed the way in which the handleInput function returned values.
+			\item \textbf{Memory Usage} - For a large part of the development of the program, performance would greatly diminish with time as the program continued to run. Initially we though this to be an issue with the way the pieces were counted or with how the AI evaluated the board. Unbeknownst to us, it was actually a result of the way the program displayed the bitmap images. Rather than loading them in once at the start of the program and reusing them (as is the case now) the program would load in all of the images every time the display refreshed, resulting in memory to be filled up storing additional copies of the images. Eventually this would result in a system crash when there was no additional memory for the images. The solution to this was to add fields in the World state to store the images and then access them from there.
 		\end{itemize}
 
 	\section{Summary of Provenance}
-			TODO - include link to code on website
+			The source files modified for this practical are the original five provided (AI.hs, Board.hs, Draw.hs, Input.hs, Main.hs) and now include the code required for each of the following requirements:
 			\begin{itemize}
 				\item 160001362:
 					\begin{itemize}
-						\item Basic Requirement 4
-						\item Medium Requirement 3 - Implemented the evaluation for the AI which is also used to generate a user hint.
-						\item Hard Requirement 2 - Implemented the multiple AIs
+						\item \textbf{Basic Requirement 4}
+						\item \textbf{Medium Requirement 3} - Implemented the evaluation for the AI which is also used to generate a user hint.
+						\item \textbf{Hard Requirement 2} - Implemented the multiple AIs
 					\end{itemize}
 					
 				\item 160016245:
 					\begin{itemize}
-						\item Easy Requirement 1
-						\item Easy Requirement 3 - Rule of four and four
-						\item Medium Requirement 1
-						\item Medium Requirement 3 - Displayed the hints generated by the evaluation function.
-						\item Hard Requirement 2 - Enabled user to choose between the AI modes (as well as player vs player).
+						\item \textbf{Easy Requirement 1}
+						\item \textbf{Easy Requirement 3} - Rule of four and four
+						\item \textbf{Medium Requirement 1}
+						\item \textbf{Medium Requirement 3} - Displayed the hints generated by the evaluation function.
+						\item \textbf{Hard Requirement 2} - Enabled user to choose between the AI modes (as well as player vs player).
 					\end{itemize}
 					
 				\item 160021429:
 					\begin{itemize}
-						\item Basic Requirements 1 - 3
-						\item Easy Requirement 2
-						\item Medium Requirement 2
-						\item Medium Requirement 4
+						\item \textbf{Basic Requirements 1 - 3}
+						\item \textbf{Easy Requirement 2}
+						\item \textbf{Medium Requirement 2}
+						\item \textbf{Medium Requirement 4}
 					\end{itemize}
 			\end{itemize}
 				
