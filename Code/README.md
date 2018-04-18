@@ -1,3 +1,13 @@
+Cabal Instructions:
+1. If when running the program any dependencies are not installed, run:
+	cabal install 
+
+2. If the graphics package gloss is not installed, run:
+	cabal install gloss
+
+3. If cabal is not properly configured, run:
+	cabal configure
+
 Execution Instructions:
 
 1. Open a terminal window.
