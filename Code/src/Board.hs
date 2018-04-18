@@ -86,7 +86,7 @@ data World = World { board :: Board,
 -- @[Picture] - BMP game images, @[Picture] - BMP button images, @[Picture] - BMP win screen images
 -- @IOWorld - world to store state of program
 initWorld :: Int -> Int -> Bool -> [(Position, Col)] -> Col -> Col -> String -> Bool -> String -> [Picture] -> [Picture] -> [Picture] -> IO World
-initWorld size target isUpdated history turn player game_type running ai gImages bImages wImages = if running -- set default hint position as the middle piece TODO
+initWorld size target isUpdated history turn player game_type running ai gImages bImages wImages = if running
                                                                                                     then return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn isUpdated player game_type (gameButtons size) running ai gImages bImages wImages
                                                                                                    else return $ World (initBoard size target history ((calcPos size), (calcPos size)) False) turn isUpdated player game_type (loadingButtons size) running ai gImages bImages wImages
   where calcPos size = (size `div` 2)
@@ -123,7 +123,7 @@ adjustButtons size = map adjustB
 -- @IO World - world reverted to previous board state.
 undo :: Int -> IO World -> IO World
 undo a world = do w <- world
-                  if (checker w || (checkWon (board w) /= Nothing))
+                  if (checker w)
                      then return w
                      else return $ (w { board = (board w) { pieces = remove (pieces (board w)) 2 } })
     where checker w = checkIfFirstTurn (pieces (board w))
@@ -436,9 +436,10 @@ getNumClosed board col = length (filter (== True) (getClosed board col (pieces b
 -- @Board - board to scan for set lengths, @Col - colour to scan for.
 -- @Float - average length of sets.
 getAverageLength :: Board -> Col -> Float
-getAverageLength board col = if (getNumConsecutive board col) > 0
+getAverageLength board col = let numConsecutive = getNumConsecutive board col in
+                             if (numConsecutive) > 0
                              then realToFrac (sum(map sum (map (getLengths (pieces board) board col) [(x, y) | x <- [-1..1], y <- [-1..1], (x, y) /= (0,0)])))
-                                    / realToFrac (getNumConsecutive board col)
+                                    / realToFrac (numConsecutive)
                              else 0.0
 
 --Gets the consecutive sets on the board for a player. If there are no pieces on the

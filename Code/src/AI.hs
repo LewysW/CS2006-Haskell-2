@@ -59,7 +59,9 @@ getBestMove d tree = let middle = getMiddleOfBoard (size (game_board tree)) in
                      if (getPiece (pieces (game_board tree)) middle) == Nothing then middle
                      else if (length(pieces (game_board tree)) == 1) && ((getPiece (pieces (game_board tree)) middle) /= Nothing)
                          then addT middle (-1, -1)
-                     else fst (fromJust (maxTurn (next_moves tree) (game_turn tree)))
+                     else case (maxTurn (next_moves tree) (game_turn tree)) of
+                           Just m -> fst m
+                           Nothing -> middle
 
 --Works out the middle coordinate of the board.
 -- @Int - size of board, @Position - position of middle piece.
@@ -97,6 +99,7 @@ evaluateNextMoves nextMoves col = map (\ nextMove -> (evaluate (game_board (snd 
 -- @Int - Pseudo-random index used to get a random move.
 getRandomIndex :: Int -- List length
                 -> Int -- Pseudo-random index
+getRandomIndex 0 = 0
 getRandomIndex len = fromIntegral((unsafePerformIO getCPUTime) `mod` toInteger(len))
 
 --Gets list of empty positions (with no piece) on board for potential moves. Does
@@ -124,14 +127,28 @@ gen board col = trace("gen") getEmptyPos (pieces board) (size board)
 -- using getBestMove and making the move at this position
 -- using makeMoves
 -- @World - world containing board to update. @Col - colour to use to make move
--- @String - string representing the AI mode. @Maybe World - updated world.
-updateBoard :: World -> Col -> String -> Maybe World
-updateBoard w colour ai = let positions = (gen (board w) colour) in
+-- @String - string representing the AI mode. @Position - best position
+-- @Maybe World - updated world.
+updateBoard :: World -> Col -> String -> Position -> Maybe World
+updateBoard w colour ai bestPos = let positions = (gen (board w) colour) in
                                   case ai of
-                                  "beginner" -> Just (w {board = fromJust (makeMove (board w) colour ((positions)!!(getRandomIndex (length(positions))))), isUpdated = True, turn = other (turn w)})
-                                  "intermediate" -> if (not (isUpdated w)) || (pieces (board w)) == []
-                                                       then Just (w {board = fromJust (makeMove (board w) colour (getBestMove 1 (buildTree gen (board w) colour))), isUpdated = True, turn = other (turn w)})
-                                                    else Just w
+                                  "beginner" -> case (getRandomPosition (getRandomIndex (length(positions))) (positions)) of
+                                    Just c -> case (makeMove (board w) colour c) of
+                                      Just b -> Just (w {board = b, isUpdated = True, turn = other (turn w)})
+                                      Nothing -> Just (w {isUpdated = True})
+                                    Nothing -> Just (w {isUpdated = True})
+                                  "intermediate" -> case (makeMove (board w) colour bestPos) of
+                                    Just b -> if (not (isUpdated w)) || (pieces (board w)) == []
+                                                       then Just (w {board = b, isUpdated = True, turn = other (turn w)})
+                                              else Just w
+                                    Nothing -> Nothing
+
+--Gets a random position using a given random index
+-- @Int - random index, @[Position] - list of empty positions,
+-- @Maybe Position - position randomly selected (if not Nothing)
+getRandomPosition :: Int -> [Position] -> Maybe Position
+getRandomPosition _ [] = Nothing
+getRandomPosition index moves = Just((moves)!!(index))
 
 
 -- Update the world state after some time has passed
@@ -142,9 +159,12 @@ updateBoard w colour ai = let positions = (gen (board w) colour) in
 updateWorld :: Float -- ^ time since last update (you can ignore this)
             -> IO World -- ^ current world state
             -> IO (IO World)
-updateWorld t world = do wo <- trace("updating world") world
+updateWorld t world = do wo <- world
                          let bestMove = (getBestMove 1 (buildTree gen (board wo) (player wo)))
-                         let w = (wo { board = (board wo) { hint = bestMove } })
-                         if (((turn w) /= (player w)) && ((checkWon (board w)) == Nothing) && (((ai w)) /= ("pvp"))) --if not the player's turn
-                            then return $ trace("turn " ++ show(turn w) ++ " ended") return (trace("testing") (fromJust(updateBoard w (turn w) (ai w))))
-                         else trace("got here") (return world)
+
+                         if (((turn wo) /= (player wo)) && ((checkWon (board wo)) == Nothing) && (((ai wo)) /= ("pvp"))) --if not the player's turn
+                           then case (updateBoard wo (turn wo) (ai wo) bestMove) of
+                             Just w -> return $ trace("turn " ++ show(turn wo) ++ " ended") return w
+                             Nothing ->return $ trace("turn " ++ show(turn wo) ++ " ended") return (trace("testing") wo)
+                         else
+                           return $ return wo { board = (board wo) { hint = bestMove } }
